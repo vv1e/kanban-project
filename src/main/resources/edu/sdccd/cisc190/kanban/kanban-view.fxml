@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Text?>
+<BorderPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="edu.sdccd.cisc190.kanban.KanbanController"
+    stylesheets="/styles.css"
+>
+    <top>
+        <MenuBar
+           fx:id="menuBar"
+        >
+            <Menu text="File">
+                <Menu text="New...">
+                    <MenuItem text="Kanban Board"/>
+                    <MenuItem text="Category" disable="true"/>
+                    <MenuItem text="Issue" disable="true"/>
+                </Menu>
+                <MenuItem text="Open..."/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Save" disable="true"/>
+                <MenuItem text="Save As..." disable="true"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Close Kanban Board" disable="true"/>
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About kanban"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <center>
+        <VBox>
+            <Label text="Welcome back, ${user}"/>
+            <HBox maxWidth="Infinity" styleClass="kanban-container" spacing="4" VBox.vgrow="ALWAYS">
+                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+                    <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
+                        <HBox>
+                            <HBox styleClass="item-tag">
+                                <Text>#123456</Text>
+                            </HBox>
+                            <HBox styleClass="item-title">
+                                <Text>Lorem Ipsum Dolor Sit Amet</Text>
+                            </HBox>
+                        </HBox>
+                        <Text>
+
+                        </Text>
+                    </VBox>
+                </VBox>
+                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+
+                </VBox>
+                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+
+                </VBox>
+                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

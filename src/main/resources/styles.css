@@ -1,0 +1,30 @@
+.kanban-container {
+    -fx-padding: 4px;
+}
+
+.kanban-column {
+    -fx-border-width: 2px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #222;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 4px;
+}
+
+.kanban-issue {
+    -fx-background-color: #77c5d5;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 4px;
+}
+
+.item-tag {
+    -fx-background-radius: 2px;
+    -fx-padding: 2px;
+    -fx-background-color: #FFFFFF;
+}
+
+.item-title {
+    -fx-font-weight: bold;
+
+}
