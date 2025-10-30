@@ -43,7 +43,7 @@
 
     <center>
         <VBox>
-            <Label text="Welcome back, ${user}"/>
+            <Label styleClass="kanban-boardname">Welcome Back</Label>
                 <GridPane hgap="4" styleClass="kanban-container" VBox.vgrow="ALWAYS">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
@@ -56,29 +56,49 @@
                         <RowConstraints vgrow="ALWAYS" percentHeight="100.0"/>
                     </rowConstraints>
 
-                    <VBox minWidth="100" VBox.vgrow="NEVER" styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                        <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
-                            <HBox minWidth="0" spacing="3">
-                                <HBox styleClass="item-tag">
-                                    <Text>#123456</Text>
-                                </HBox>
-                                <Label styleClass="item-title" minWidth="0">
-                                    Lorem Ipsum Dolor Sit Amet
+                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                        <Label styleClass="kanban-column-label" textAlignment="CENTER" alignment="CENTER">
+                            BACKLOG
+                        </Label>
+                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
+                            <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
+                                <VBox minWidth="0" spacing="3">
+                                    <HBox styleClass="item-tag" maxWidth="0">
+                                        <Text>#123456</Text>
+                                    </HBox>
+                                    <Label styleClass="item-title" minWidth="0">
+                                        Lorem Ipsum Dolor Sit Amet
+                                    </Label>
+                                </VBox>
+                                <Label wrapText="true" >
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec eros a neque bibendu...
                                 </Label>
-                            </HBox>
-                            <Label>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec eros a neque bibendum porta. Maecenas lorem lacus, lobortis ut sem in, molestie ornare augue. Nulla ut risus eget elit auctor luctus. Nullam accumsan mi nibh, at iaculis nulla imperdiet volutpat. Nunc placerat convallis orci et ornare.
-                            </Label>
+                            </VBox>
                         </VBox>
                     </VBox>
                     <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
+                            IN PROGRESS
+                        </Label>
+                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
 
+                        </VBox>
                     </VBox>
                     <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
+                            BUG TESTING
+                        </Label>
+                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
 
+                        </VBox>
                     </VBox>
                     <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="3">
+                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
+                            COMPLETED
+                        </Label>
+                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
 
+                        </VBox>
                     </VBox>
                 </GridPane>
         </VBox>

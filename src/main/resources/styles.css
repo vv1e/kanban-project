@@ -1,14 +1,27 @@
+.kanban-boardname {
+    -fx-font-size: xx-large;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.5;
+    -fx-start-margin: 10;
+}
+
 .kanban-container {
     -fx-padding: 4px;
 }
 
-.kanban-column {
+.kanban-column-list {
     -fx-border-width: 2px;
     -fx-background-color: #FFFFFF;
     -fx-border-color: #222;
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
     -fx-padding: 4px;
+}
+
+.kanban-column-label {
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+    -fx-text-anchor: middle;
 }
 
 .kanban-issue {
@@ -22,6 +35,7 @@
     -fx-background-radius: 2px;
     -fx-padding: 2px;
     -fx-background-color: #FFFFFF;
+    -fx-font-size: small;
 }
 
 .kanban-issue:hover {
@@ -32,4 +46,7 @@
 .item-title {
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+}
+
+.kanban-column {
 }
