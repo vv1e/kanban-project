@@ -12,7 +12,7 @@
 }
 
 .kanban-issue {
-    -fx-background-color: #77c5d5;
+    -fx-background-color: #8eeaf8;
     -fx-border-radius: 3px;
     -fx-background-radius: 3px;
     -fx-padding: 4px;
@@ -22,6 +22,11 @@
     -fx-background-radius: 2px;
     -fx-padding: 2px;
     -fx-background-color: #FFFFFF;
+}
+
+.kanban-issue:hover {
+    -fx-background-color: #7dcdd8;
+    -fx-cursor: pointer;
 }
 
 .item-title {

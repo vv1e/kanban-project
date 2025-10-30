@@ -10,6 +10,9 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.KanbanController"
@@ -41,32 +44,43 @@
     <center>
         <VBox>
             <Label text="Welcome back, ${user}"/>
-            <HBox maxWidth="Infinity" styleClass="kanban-container" spacing="4" VBox.vgrow="ALWAYS">
-                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
-                    <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
-                        <HBox>
-                            <HBox styleClass="item-tag">
-                                <Text>#123456</Text>
-                            </HBox>
-                            <HBox styleClass="item-title">
-                                <Text>Lorem Ipsum Dolor Sit Amet</Text>
-                            </HBox>
-                        </HBox>
-                        <Text>
+                <GridPane hgap="4" styleClass="kanban-container" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
+                    </columnConstraints>
 
-                        </Text>
+                    <rowConstraints>
+                        <RowConstraints vgrow="ALWAYS" percentHeight="100.0"/>
+                    </rowConstraints>
+
+                    <VBox minWidth="100" VBox.vgrow="NEVER" styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                        <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
+                            <HBox minWidth="0" spacing="3">
+                                <HBox styleClass="item-tag">
+                                    <Text>#123456</Text>
+                                </HBox>
+                                <Label styleClass="item-title" minWidth="0">
+                                    Lorem Ipsum Dolor Sit Amet
+                                </Label>
+                            </HBox>
+                            <Label>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec eros a neque bibendum porta. Maecenas lorem lacus, lobortis ut sem in, molestie ornare augue. Nulla ut risus eget elit auctor luctus. Nullam accumsan mi nibh, at iaculis nulla imperdiet volutpat. Nunc placerat convallis orci et ornare.
+                            </Label>
+                        </VBox>
                     </VBox>
-                </VBox>
-                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="1">
 
-                </VBox>
-                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+                    </VBox>
+                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="2">
 
-                </VBox>
-                <VBox styleClass="kanban-column" HBox.hgrow="ALWAYS">
+                    </VBox>
+                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="3">
 
-                </VBox>
-            </HBox>
+                    </VBox>
+                </GridPane>
         </VBox>
     </center>
 </BorderPane>
