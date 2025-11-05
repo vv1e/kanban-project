@@ -1,4 +1,4 @@
-package edu.sdccd.cisc190.kanban;
+package edu.sdccd.cisc190.kanban.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;

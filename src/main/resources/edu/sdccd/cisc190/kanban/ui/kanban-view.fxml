@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
-    fx:controller="edu.sdccd.cisc190.kanban.KanbanController"
+    fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
     stylesheets="/styles.css"
 >
     <top>
