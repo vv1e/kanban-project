@@ -2,11 +2,22 @@
     -fx-font-size: xx-large;
     -fx-font-weight: bold;
     -fx-opacity: 0.5;
-    -fx-start-margin: 10;
+    -fx-padding: 5;
+}
+
+.kanban-openreminder {
+    -fx-font-size: large;
+    -fx-opacity: 0.8;
+    -fx-padding: 0 0 0 5;
 }
 
 .kanban-container {
     -fx-padding: 4px;
+}
+
+.kanban-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
 .kanban-column-list {
@@ -48,5 +59,11 @@
     -fx-font-size: 14px;
 }
 
-.kanban-column {
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.list-cell .label {
+    -fx-text-fill: black;
 }

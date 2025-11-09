@@ -1,0 +1,7 @@
+.message-window {
+    -fx-padding: 10;
+}
+
+.baseline-message {
+    -fx-padding: 0 0 10 0;
+}

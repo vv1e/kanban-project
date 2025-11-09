@@ -9,31 +9,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
-    stylesheets="/styles.css"
+    stylesheets="/kanban-rootstyle.css"
 >
     <top>
         <MenuBar
-           fx:id="menuBar"
+            fx:id="menuBar"
         >
             <Menu text="File">
                 <Menu text="New...">
-                    <MenuItem text="Kanban Board"/>
-                    <MenuItem text="Category" disable="true"/>
-                    <MenuItem text="Issue" disable="true"/>
+                    <MenuItem text="Kanban Board" onAction="#newBoard"/>
+                    <MenuItem fx:id="menuNewCategory" text="Category" disable="true"/>
+                    <MenuItem fx:id="menuNewIssue" text="Issue" disable="true"/>
                 </Menu>
-                <MenuItem text="Open..."/>
+                <MenuItem fx:id="menuOpen" text="Open..."/>
                 <SeparatorMenuItem/>
-                <MenuItem text="Save" disable="true"/>
-                <MenuItem text="Save As..." disable="true"/>
+                <MenuItem fx:id="menuSave" text="Save" disable="true"/>
+                <MenuItem fx:id="menuSaveAs" text="Save As..." disable="true"/>
                 <SeparatorMenuItem/>
-                <MenuItem text="Close Kanban Board" disable="true"/>
+                <MenuItem fx:id="menuClose" text="Close Kanban Board" disable="true" onAction="#closeBoard"/>
             </Menu>
             <Menu text="Help">
                 <MenuItem text="About kanban"/>
@@ -42,65 +39,14 @@
     </top>
 
     <center>
-        <VBox>
-            <Label styleClass="kanban-boardname">Welcome Back</Label>
-                <GridPane hgap="4" styleClass="kanban-container" VBox.vgrow="ALWAYS">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0" minWidth="100"/>
-                    </columnConstraints>
+        <VBox HBox.hgrow="ALWAYS">
+            <Label fx:id="welcomeLabel" styleClass="kanban-boardname">Welcome back!</Label>
+            <Label fx:id="openLabel" styleClass="kanban-openreminder">Use the File menu to create a new Kanban board, or edit an existing one.</Label>
+            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="kanban-scroll" maxWidth="Infinity">
+                <HBox fx:id="kanbanColumns" spacing="4" styleClass="kanban-container" VBox.vgrow="ALWAYS">
 
-                    <rowConstraints>
-                        <RowConstraints vgrow="ALWAYS" percentHeight="100.0"/>
-                    </rowConstraints>
-
-                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                        <Label styleClass="kanban-column-label" textAlignment="CENTER" alignment="CENTER">
-                            BACKLOG
-                        </Label>
-                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
-                            <VBox styleClass="kanban-issue" HBox.hgrow="ALWAYS">
-                                <VBox minWidth="0" spacing="3">
-                                    <HBox styleClass="item-tag" maxWidth="0">
-                                        <Text>#123456</Text>
-                                    </HBox>
-                                    <Label styleClass="item-title" minWidth="0">
-                                        Lorem Ipsum Dolor Sit Amet
-                                    </Label>
-                                </VBox>
-                                <Label wrapText="true" >
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec eros a neque bibendu...
-                                </Label>
-                            </VBox>
-                        </VBox>
-                    </VBox>
-                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
-                            IN PROGRESS
-                        </Label>
-                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
-
-                        </VBox>
-                    </VBox>
-                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="2">
-                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
-                            BUG TESTING
-                        </Label>
-                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
-
-                        </VBox>
-                    </VBox>
-                    <VBox styleClass="kanban-column" GridPane.rowIndex="0" GridPane.columnIndex="3">
-                        <Label styleClass="kanban-column-label" textAlignment="CENTER">
-                            COMPLETED
-                        </Label>
-                        <VBox styleClass="kanban-column-list" VBox.vgrow="ALWAYS" minWidth="0">
-
-                        </VBox>
-                    </VBox>
-                </GridPane>
+                </HBox>
+            </ScrollPane>
         </VBox>
     </center>
 </BorderPane>

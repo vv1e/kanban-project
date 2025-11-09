@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox
+    xmlns:fx="http://javafx.com/fxml"
+
+    HBox.hgrow="SOMETIMES"
+    minWidth="150"
+    styleClass="kanban-issue"
+>
+    <VBox minWidth="0" spacing="3">
+        <HBox styleClass="item-tag" maxWidth="0">
+            <Text fx:id="idText">#123456</Text>
+        </HBox>
+        <Label fx:id="titleLabel" styleClass="item-title" minWidth="0">
+            Lorem Ipsum Dolor Sit Amet
+        </Label>
+    </VBox>
+    <Label fx:id="descriptionLabel" wrapText="true" >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec eros a neque bibendu...
+    </Label>
+</VBox>
