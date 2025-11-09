@@ -22,30 +22,28 @@
             <Menu text="File">
                 <Menu text="New...">
                     <MenuItem text="Kanban Board" onAction="#newBoard"/>
-                    <MenuItem fx:id="menuNewCategory" text="Category" disable="true"/>
-                    <MenuItem fx:id="menuNewIssue" text="Issue" disable="true"/>
+                    <MenuItem fx:id="menuFileNewCategory" text="Category" disable="true"/>
+                    <MenuItem fx:id="menuFileNewIssue" text="Issue" disable="true"/>
                 </Menu>
-                <MenuItem fx:id="menuOpen" text="Open..."/>
+                <MenuItem text="Open..."/>
                 <SeparatorMenuItem/>
-                <MenuItem fx:id="menuSave" text="Save" disable="true"/>
-                <MenuItem fx:id="menuSaveAs" text="Save As..." disable="true"/>
+                <MenuItem fx:id="menuFileSave" text="Save" disable="true"/>
+                <MenuItem fx:id="menuFileSaveAs" text="Save As..." disable="true"/>
                 <SeparatorMenuItem/>
-                <MenuItem fx:id="menuClose" text="Close Kanban Board" disable="true" onAction="#closeBoard"/>
+                <MenuItem fx:id="menuFileClose" text="Close Kanban Board" disable="true" onAction="#closeBoard"/>
             </Menu>
             <Menu text="Help">
-                <MenuItem text="About kanban"/>
+                <MenuItem text="About Kanban" onAction="#openAboutWindow"/>
             </Menu>
         </MenuBar>
     </top>
 
     <center>
         <VBox HBox.hgrow="ALWAYS">
-            <Label fx:id="welcomeLabel" styleClass="kanban-boardname">Welcome back!</Label>
-            <Label fx:id="openLabel" styleClass="kanban-openreminder">Use the File menu to create a new Kanban board, or edit an existing one.</Label>
-            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="kanban-scroll" maxWidth="Infinity">
-                <HBox fx:id="kanbanColumns" spacing="4" styleClass="kanban-container" VBox.vgrow="ALWAYS">
-
-                </HBox>
+            <Label fx:id="welcomeLabel" styleClass="kanban-boardname" HBox.hgrow="ALWAYS" maxWidth="Infinity">Welcome back!</Label>
+            <Label fx:id="openLabel" styleClass="kanban-openreminder" HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="Infinity" alignment="TOP_LEFT" wrapText="true">Use the File menu to create a new Kanban board, or edit an existing one.</Label>
+            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="kanban-scroll">
+                <HBox fx:id="kanbanColumns" spacing="10" styleClass="kanban-container" VBox.vgrow="ALWAYS"/>
             </ScrollPane>
         </VBox>
     </center>

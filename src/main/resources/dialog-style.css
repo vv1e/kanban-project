@@ -1,5 +1,9 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+}
+
 .message-window {
-    -fx-padding: 10;
+    -fx-padding: 15;
 }
 
 .baseline-message {

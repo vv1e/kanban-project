@@ -1,69 +1,105 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+}
+
 .kanban-boardname {
     -fx-font-size: xx-large;
     -fx-font-weight: bold;
-    -fx-opacity: 0.5;
     -fx-padding: 5;
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5 0%, #dbdbdb 100%);
 }
 
 .kanban-openreminder {
     -fx-font-size: large;
-    -fx-opacity: 0.8;
-    -fx-padding: 0 0 0 5;
+    -fx-padding: 10 0 0 5;
+    -fx-background-color: linear-gradient(to top, #f5f5f5 0%, #cfcfcf 100%);
 }
 
 .kanban-container {
-    -fx-padding: 4px;
+    -fx-padding: 20 10 10 10;
+    -fx-background-color: linear-gradient(to top, #f5f5f5 0%, #cfcfcf 100%);
 }
 
 .kanban-scroll {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+    -fx-padding: -1;
 }
 
-.kanban-column-list {
-    -fx-border-width: 2px;
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #222;
-    -fx-background-radius: 5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 4px;
+.kanban-column {
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, #00000030, 10, 0, 0, 0);
+}
+
+.kanban-column-label-container {
+    -fx-effect: dropshadow(one-pass-box, #00000030, 10, 0, 0, 1);
 }
 
 .kanban-column-label {
     -fx-font-weight: bold;
-    -fx-text-alignment: center;
-    -fx-text-anchor: middle;
+    -fx-font-size: 12px;
+    -fx-padding: 10 8 10 8;
+    -fx-background-color: #da371a;
+    -fx-text-fill: white;
+    -fx-background-radius: 5 5 0 0;
+    -fx-effect: innershadow(gaussian, #FFFFFF50, 3, 0, 0.0, 1)
+}
+
+.kanban-column-list {
+    -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #fcfcf9, #f4f4f0);
+    -fx-background-radius: 0 0 5 5;
+    -fx-scale-x: 1;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0, 0;
 }
 
 .kanban-issue {
-    -fx-background-color: #8eeaf8;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
+    -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #ecd69d, #eccf86);
     -fx-padding: 4px;
-}
-
-.item-tag {
-    -fx-background-radius: 2px;
-    -fx-padding: 2px;
-    -fx-background-color: #FFFFFF;
-    -fx-font-size: small;
+    -fx-effect: dropshadow(one-pass-box, #00000026, 5, 0, 0, 2);
 }
 
 .kanban-issue:hover {
-    -fx-background-color: #7dcdd8;
+    -fx-background-color: #dcc07e;
     -fx-cursor: pointer;
+}
+
+.id-tag {
+    -fx-padding: 2px;
+    -fx-background-color: #FFFFFF;
+    -fx-font-size: small;
+    -fx-text-fill: black;
+}
+
+.bug-tag {
+    -fx-padding: 2px;
+    -fx-background-color: #ff4c4c;
+    -fx-font-size: small;
+    -fx-font-weight: bold;
+    -fx-scale-shape: square;
+    -fx-text-fill: white;
+}
+
+.feature-tag {
+    -fx-padding: 2px;
+    -fx-background-color: #36cf7e;
+    -fx-font-weight: bold;
+    -fx-font-size: small;
+    -fx-scale-shape: square;
+    -fx-text-fill: white;
 }
 
 .item-title {
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+.item-description {
+    -fx-text-fill: black;
 }
 
 .list-cell {
     -fx-background-color: transparent;
-    -fx-padding: 0;
-}
-
-.list-cell .label {
-    -fx-text-fill: black;
+    -fx-padding: 4;
 }

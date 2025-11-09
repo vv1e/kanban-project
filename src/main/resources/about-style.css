@@ -1,0 +1,17 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+}
+
+.app-name {
+    -fx-font-size: 16pt;
+    -fx-font-weight: bold;
+    -fx-text-align: center;
+}
+
+.app-version {
+
+}
+
+.app-misc {
+    -fx-padding: 10 0 0 0;
+}

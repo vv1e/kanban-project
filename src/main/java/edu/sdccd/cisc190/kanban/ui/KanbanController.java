@@ -10,6 +10,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -30,49 +31,88 @@ public class KanbanController {
     @FXML private HBox kanbanColumns;
     @FXML private Label openLabel;
 
-    @FXML private MenuItem menuNewCategory;
-    @FXML private MenuItem menuNewIssue;
-    @FXML private MenuItem menuOpen;
-    @FXML private MenuItem menuSave;
-    @FXML private MenuItem menuSaveAs;
-    @FXML private MenuItem menuClose;
+    @FXML private MenuItem menuFileNewCategory;
+    @FXML private MenuItem menuFileNewIssue;
+    @FXML private MenuItem menuFileSave;
+    @FXML private MenuItem menuFileSaveAs;
+    @FXML private MenuItem menuFileClose;
 
     @FXML
     protected void initialize() {
         menuBar.setUseSystemMenuBar(System.getProperty("os.name").toLowerCase().contains("mac"));
 
-        menuNewCategory.disableProperty().bind(isBoardLoaded.not());
-        menuNewIssue.disableProperty().bind(isBoardLoaded.not());
-        menuOpen.disableProperty().bind(isBoardLoaded.not());
-        menuSave.disableProperty().bind(isBoardLoaded.not());
-        menuSaveAs.disableProperty().bind(isBoardLoaded.not());
-        menuClose.disableProperty().bind(isBoardLoaded.not());
+        menuFileNewCategory.disableProperty().bind(isBoardLoaded.not());
+        menuFileNewIssue.disableProperty().bind(isBoardLoaded.not());
+        menuFileSave.disableProperty().bind(isBoardLoaded.not());
+        menuFileSaveAs.disableProperty().bind(isBoardLoaded.not());
+        menuFileClose.disableProperty().bind(isBoardLoaded.not());
 
         openLabel.visibleProperty().bind(isBoardLoaded.not());
         openLabel.managedProperty().bind(isBoardLoaded.not());
+
+        kanbanColumns.visibleProperty().bind(isBoardLoaded);
+        kanbanColumns.managedProperty().bind(isBoardLoaded);
     }
 
     @FXML
     private void newBoard() throws IOException {
         Stage currentStage = (Stage) menuBar.getScene().getWindow();
 
+        menuBar.setDisable(true);
+        for (Menu menu : menuBar.getMenus()) {
+            menu.setDisable(true);
+        }
+
         Stage stage = new Stage();
         stage.initOwner(currentStage);
-        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle("New Board");
         stage.setResizable(false);
         stage.setWidth(300);
-        stage.setHeight(150);
+        stage.setHeight(165);
 
         FXMLLoader fxmlLoader = new FXMLLoader(BoardCreationController.class.getResource("board-creation-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
-        stage.show();
+        stage.showAndWait();
+
+        menuBar.setDisable(false);
+        for (Menu menu : menuBar.getMenus()) {
+            menu.setDisable(false);
+        }
     }
 
     @FXML
     private void closeBoard() {
         setCurrentBoard(null);
+    }
+
+    @FXML
+    private void openAboutWindow() throws IOException {
+        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+
+        menuBar.setDisable(true);
+        for (Menu menu : menuBar.getMenus()) {
+            menu.setDisable(true);
+        }
+
+        Stage stage = new Stage();
+        stage.initOwner(currentStage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("About Kanban");
+        stage.setResizable(false);
+        stage.setWidth(325);
+        stage.setHeight(175);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(KanbanController.class.getResource("about-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setScene(scene);
+        stage.showAndWait();
+
+        menuBar.setDisable(false);
+        for (Menu menu : menuBar.getMenus()) {
+            menu.setDisable(false);
+        }
     }
 
     public void setCurrentBoard(Board board) {
@@ -90,31 +130,44 @@ public class KanbanController {
             isBoardLoaded.setValue(true);
             stage.setTitle(String.format("Kanban Project: %s", board.getName()));
 
-            welcomeLabel.setText(String.format("Current Board: %s", board.getName()));
+            welcomeLabel.setText(String.format("%s", board.getName()));
 
             final ArrayList<StringProperty> issueCategoryNames = board.getIssueCategoryNames();
             final ArrayList<ObservableList<Issue>> issueCategories = board.getIssues();
 
             for (int i = 0 ; i < issueCategoryNames.size(); i++) {
                 VBox categoryContainer = new VBox();
-                Label categoryLabel = new Label(issueCategoryNames.get(i).get());
+                VBox categoryLabelContainer = new VBox();
+                Label categoryLabel = new Label(issueCategoryNames.get(i).get().toUpperCase());
                 ListView<Issue> listView = new ListView<>(issueCategories.get(i));
 
                 VBox.setVgrow(categoryContainer, Priority.ALWAYS);
+                HBox.setHgrow(categoryContainer, Priority.ALWAYS);
+                HBox.setHgrow(categoryLabel, Priority.ALWAYS);
                 VBox.setVgrow(listView, Priority.ALWAYS);
                 categoryContainer.setMinWidth(200.0d);
+                categoryLabel.setMinWidth(200.0d);
+                categoryLabel.setAlignment(Pos.CENTER);
+                categoryLabel.setMaxWidth(Double.MAX_VALUE);
+
+                categoryLabel.setViewOrder(0);
+                listView.setViewOrder(1);
 
                 categoryContainer.getStyleClass().add("kanban-column");
+                categoryLabelContainer.getStyleClass().add("kanban-column-label-container");
                 categoryLabel.getStyleClass().add("kanban-column-label");
                 listView.getStyleClass().add("kanban-column-list");
 
                 listView.setCellFactory((issue -> new IssueCell()));
 
-                categoryContainer.getChildren().addAll(categoryLabel, listView);
+                categoryLabelContainer.getChildren().add(categoryLabel);
+                categoryContainer.getChildren().addAll(categoryLabelContainer, listView);
+
                 kanbanColumns.getChildren().add(categoryContainer);
             }
 
-            board.createIssue("test", "test2", IssueType.BUG_REPORT, "a");
+            board.createIssue("Lorem Ipsum", "Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit", IssueType.BUG_REPORT, "a");
+            board.createIssue("Lorem Ipsum", "Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit", IssueType.FEATURE_REQUEST, "a");
         }
     }
 

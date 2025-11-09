@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+    xmlns="http://javafx.com/javafx"
+    prefHeight="400.0" prefWidth="600.0"
+    stylesheets="/about-style.css"
+    alignment="CENTER"
+>
+    <Label styleClass="app-name" >Kanban Project</Label>
+    <Label styleClass="app-version">Version ${project.version}</Label>
+    <Label styleClass="app-misc" wrapText="true" textAlignment="CENTER">Built with &lt;3 by MMHS's CISC 190 class at Miramar</Label>
+</VBox>
