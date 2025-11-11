@@ -1,44 +1,28 @@
 package edu.sdccd.cisc190.kanban.ui.components;
 
 import edu.sdccd.cisc190.kanban.models.Comment;
-import javafx.geometry.Pos;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+
 public class CommentCell extends ListCell<Comment> {
-    private final VBox commentBox;
-    private final Label commentAuthorLabel;
-    private final Label commentDateLabel;
-    private final Label commentTextLabel;
+    private final VBox rootView;
+
+    @FXML Label commentAuthorLabel;
+    @FXML private Label commentDateLabel;
+    @FXML private Label commentTextLabel;
 
     /**
      * Creates a new ListCell which displays a comment.
      */
-    public CommentCell() {
-        this.commentBox = new VBox();
-        commentBox.setSpacing(5);
-        commentBox.getStyleClass().add("comment-box");
-
-        HBox commentInfoBox = new HBox();
-        commentInfoBox.setAlignment(Pos.CENTER_LEFT);
-
-        commentAuthorLabel = new Label();
-        commentAuthorLabel.getStyleClass().add("comment-author-label");
-        commentAuthorLabel.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(commentAuthorLabel, Priority.ALWAYS);
-
-        commentDateLabel = new Label();
-        commentDateLabel.getStyleClass().add("comment-date-label");
-
-        commentTextLabel = new Label();
-        commentTextLabel.getStyleClass().add("comment-text-label");
-        commentTextLabel.setWrapText(true);
-
-        commentInfoBox.getChildren().addAll(commentAuthorLabel, commentDateLabel);
-        commentBox.getChildren().addAll(commentInfoBox, commentTextLabel);
+    public CommentCell() throws IOException {
+        FXMLLoader loader = new FXMLLoader(CommentCell.class.getResource("comment-cell.fxml"));
+        loader.setController(this);
+        rootView = loader.load();
     }
 
     @Override
@@ -50,7 +34,7 @@ public class CommentCell extends ListCell<Comment> {
             setGraphic(null);
         } else {
             this.setItem(comment);
-            setGraphic(commentBox);
+            setGraphic(rootView);
 
             commentAuthorLabel.setText(comment.getAuthor());
             commentDateLabel.setText(comment.getCreationDate());

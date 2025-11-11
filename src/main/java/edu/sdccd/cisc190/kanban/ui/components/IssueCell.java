@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 public class IssueCell extends ListCell<Issue> {
-    @FXML public VBox rootView;
+    private final VBox rootView;
 
     @FXML private Label titleLabel;
     @FXML private Label descriptionLabel;

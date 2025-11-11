@@ -6,12 +6,17 @@ import edu.sdccd.cisc190.kanban.models.IssueType;
 import edu.sdccd.cisc190.kanban.ui.components.CommentCell;
 import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
+import edu.sdccd.cisc190.kanban.util.ObjectHelper;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
+import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class IssueController {
     @FXML private VBox issueBox;
@@ -45,7 +50,25 @@ public class IssueController {
         ToggleGroup group = new ToggleGroup();
         group.getToggles().addAll(bugToggle, featureToggle);
 
-        commentList.setCellFactory(comment -> new CommentCell());
+        try {
+            commentList.setCellFactory(comment -> {
+                try {
+                    return new CommentCell();
+                } catch (IOException e) {
+                    throw new RuntimeIOException(e);
+                }
+            });
+        } catch (RuntimeIOException e) {
+            WindowHelper.createGenericErrorWindow(
+                Alert.AlertType.ERROR,
+                "Error While Opening Issue Window",
+                """
+                    There was an error while opening the issue window.
+                    Please try again later or report the bug to us over Discord.
+                    """,
+                (Stage) issueBox.getScene().getWindow()
+            );
+        }
     }
 
     /**
@@ -54,39 +77,12 @@ public class IssueController {
      */
     public void setIsIssueBeingCreated(boolean issueBeingCreated) {
         if (issueBeingCreated) {
-            // Disables the "B #123456" box, the comments, the assignee prompt, and miscellaneous stuff during Creation mode.
-            propertiesBox.setVisible(false);
-            propertiesBox.setManaged(false);
-
-            commentsBox.setVisible(false);
-            commentsBox.setManaged(false);
-
-            issueAuthorByLabel.setVisible(false);
-            issueAuthorByLabel.setManaged(false);
-            issueAssigneeBox.setVisible(false);
-            issueAssigneeBox.setManaged(false);
-
+            ObjectHelper.removeNodes(propertiesBox, commentsBox, issueAuthorByLabel, issueAssigneeBox);
             issueBox.getStyleClass().clear();
         } else {
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
-            toggleBox.setVisible(false);
-            toggleBox.setManaged(false);
-            createButtonBox.setVisible(false);
-            createButtonBox.setManaged(false);
-
-            issueTitleField.setEditable(false);
-            issueTitleField.setFocusTraversable(false);
-            issueAuthorField.setEditable(false);
-            issueAuthorField.setFocusTraversable(false);
-            issueDescriptionArea.setEditable(false);
-            issueDescriptionArea.setFocusTraversable(false);
-
-            issueTitleLabel.setVisible(false);
-            issueTitleLabel.setManaged(false);
-            issueDescriptionLabel.setVisible(false);
-            issueDescriptionLabel.setManaged(false);
-            issueAuthorLabel.setVisible(false);
-            issueAuthorLabel.setManaged(false);
+            ObjectHelper.removeNodes(toggleBox, createButtonBox, issueTitleLabel, issueAuthorLabel, issueDescriptionLabel);
+            ObjectHelper.setControlToReadonly(issueTitleField, issueDescriptionArea, issueAuthorField);
         }
     }
 
@@ -111,14 +107,58 @@ public class IssueController {
     private void createIssue(ActionEvent event) {
         final Board board = KanbanApplication.getController().getBoard();
 
-        board.createIssue(
-            issueTitleField.getText(),
-            issueDescriptionArea.getText(),
-            bugToggle.isSelected()? IssueType.BUG_REPORT: IssueType.FEATURE_REQUEST,
-            issueAuthorField.getText()
-        );
+        String[] issueProblems = new String[10];
+        int problemNumber = 0;
+        IssueType type = null;
 
-        WindowHelper.closeWindow(event);
+        if (issueTitleField.getText().trim().isEmpty()) {
+            issueProblems[problemNumber++] = " - The issue title cannot be empty.";
+        }
+
+        if (issueDescriptionArea.getText().trim().isEmpty()) {
+            issueProblems[problemNumber++] = " - The issue description cannot be empty.";
+        }
+
+        if (bugToggle.isSelected()) {
+            type = IssueType.BUG_REPORT;
+        } else if (featureToggle.isSelected()) {
+            type = IssueType.FEATURE_REQUEST;
+        } else {
+            issueProblems[problemNumber++] = " - The issue type must be specified.";
+        }
+
+        if (issueAuthorField.getText().trim().isEmpty()) {
+            issueProblems[problemNumber++] = " - The issue must have an associated author.";
+        }
+
+        if (problemNumber == 0) {
+            board.createIssue(
+                issueTitleField.getText(),
+                issueDescriptionArea.getText(),
+                type,
+                issueAuthorField.getText()
+            );
+
+            WindowHelper.closeWindow(event);
+        } else {
+            StringBuilder problemString = new StringBuilder();
+            for (int i = 0; i < problemNumber; i++) {
+                problemString.append(issueProblems[i]).append("\n");
+            }
+
+            WindowHelper.createGenericErrorWindow(
+                Alert.AlertType.ERROR,
+                "Error Creating Issue",
+                String.format(
+                    """
+                    There were one or more problems with your issue:
+                    
+                    %s
+                    """, problemString
+                ),
+                (Stage) issueBox.getScene().getWindow()
+            );
+        }
     }
 
     @FXML

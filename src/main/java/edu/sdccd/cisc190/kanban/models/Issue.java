@@ -40,8 +40,7 @@ public class Issue {
         this.dateModified = LocalDateTime.now();
 
         this.comments = FXCollections.observableArrayList();
-        this.comments.add(new Comment("testUser", "Lorem Ipsum Dolor Sit Amet\nTest123\nHello World"));
-        this.comments.add(new Comment("testUser", "Lorem Ipsum Dolor Sit Amet\nTest123\nHello World"));
+        this.addComment("System", "Issue created.");
     }
 
     public int getId() {

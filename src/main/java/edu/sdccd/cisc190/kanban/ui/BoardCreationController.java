@@ -39,8 +39,9 @@ public class BoardCreationController {
         ) {
             WindowHelper.createGenericErrorWindow(
                 Alert.AlertType.WARNING,
-                "Invalid name!",
-                "A Kanban Board must have a valid name!"
+                "Invalid Name",
+                "A Kanban Board must have a valid name!",
+                stage
             );
         } else {
             KanbanController controller = KanbanApplication.getController();

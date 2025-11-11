@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<VBox
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    VBox.vgrow="ALWAYS"
+    maxHeight="Infinity"
+    HBox.hgrow="ALWAYS"
+    minWidth="200"
+    styleClass="common-column"
+    fx:controller="edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController"
+>
+    <VBox styleClass="kanban-column-label-container" viewOrder="0" alignment="CENTER_LEFT">
+        <Label fx:id="categoryLabel" styleClass="kanban-column-label" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    </VBox>
+    <ListView fx:id="categoryListView" viewOrder="1" styleClass="common-column-list" VBox.vgrow="ALWAYS"/>
+</VBox>
