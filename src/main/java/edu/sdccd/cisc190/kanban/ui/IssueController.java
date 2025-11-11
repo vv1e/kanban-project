@@ -1,5 +1,8 @@
 package edu.sdccd.cisc190.kanban.ui;
 
+import edu.sdccd.cisc190.kanban.KanbanApplication;
+import edu.sdccd.cisc190.kanban.models.Board;
+import edu.sdccd.cisc190.kanban.models.IssueType;
 import edu.sdccd.cisc190.kanban.ui.components.CommentCell;
 import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
@@ -102,6 +105,20 @@ public class IssueController {
         issueAssigneeLabel.setText(String.format("Assignee: %s", issue.getAssignee()));
 
         commentList.getItems().addAll(issue.getComments());
+    }
+
+    @FXML
+    private void createIssue(ActionEvent event) {
+        final Board board = KanbanApplication.getController().getBoard();
+
+        board.createIssue(
+            issueTitleField.getText(),
+            issueDescriptionArea.getText(),
+            bugToggle.isSelected()? IssueType.BUG_REPORT: IssueType.FEATURE_REQUEST,
+            issueAuthorField.getText()
+        );
+
+        WindowHelper.closeWindow(event);
     }
 
     @FXML

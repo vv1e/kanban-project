@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class KanbanController {
+    private Board board;
     private final BooleanProperty isBoardLoaded = new SimpleBooleanProperty(false);
 
     @FXML private MenuBar menuBar;
@@ -117,6 +118,7 @@ public class KanbanController {
 
     public void setCurrentBoard(Board board) {
         final Stage stage = (Stage) menuBar.getScene().getWindow();
+        this.board = board;
 
         kanbanColumns.getChildren().clear();
 
@@ -219,5 +221,9 @@ public class KanbanController {
      */
     public MenuBar getMenuBar() {
         return menuBar;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }
