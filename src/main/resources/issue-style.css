@@ -1,0 +1,100 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+}
+
+.issue-rootview {
+    -fx-padding: 10;
+}
+
+.issue-title {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.issue-creation-label {
+    -fx-font-size: 10;
+    -fx-font-weight: bold;
+}
+
+.issue-commentbox-header-container {
+    -fx-effect: dropshadow(one-pass-box, #00000030, 10, 0, 0, 1);
+}
+
+.issue-commentbox-header {
+    -fx-base: #cc351a;
+    -fx-padding: 10 8 10 8;
+    -fx-background-color: #da371a;
+    -fx-background-radius: 5 5 0 0;
+    -fx-effect: innershadow(gaussian, #FFFFFF50, 3, 0, 0.0, 1)
+}
+
+.issue-commentbox-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.issue-create-box {
+    -fx-padding: 5 0 0 0;
+}
+
+.bug-toggle {
+    -fx-background-radius: 4 0 0 4;
+}
+
+.feature-toggle {
+    -fx-background-radius: 0 4 4 0;
+}
+
+.comment-box {
+    -fx-padding: 8;
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(one-pass-box, #00000010, 20, 0, 0, 0);
+}
+
+.comment-author-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.comment-date-label,
+.list-cell:selected .comment-date-label .label {
+    -fx-font-weight: bold;
+    -fx-font-size: 10;
+    -fx-text-fill: gray !important;
+}
+
+.text-field:readonly,
+.text-area:readonly {
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-opacity: 1;
+    -fx-effect: none;
+    -fx-padding: 0;
+}
+
+.text-area:readonly .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area:readonly .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-area:readonly .content {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.list-cell:selected {
+    .comment-author-label {
+        -fx-text-fill: #333333;
+    }
+    .comment-date-label {
+        -fx-text-fill: gray
+    }
+    .comment-text-label {
+        -fx-text-fill: #333333;
+    }
+}

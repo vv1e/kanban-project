@@ -1,6 +1,13 @@
 * {
     -fx-font-family: Tahoma, sans-serif;
+    -fx-focus-color: #ff4c4c;
+    -fx-faint-focus-color: transparent;
 }
+
+.button:default {
+    -fx-base: #ff6c6c
+}
+
 
 .message-window {
     -fx-padding: 15;

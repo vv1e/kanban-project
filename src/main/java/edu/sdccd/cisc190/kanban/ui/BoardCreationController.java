@@ -1,7 +1,8 @@
 package edu.sdccd.cisc190.kanban.ui;
 
 import edu.sdccd.cisc190.kanban.KanbanApplication;
-import edu.sdccd.cisc190.kanban.util.Board;
+import edu.sdccd.cisc190.kanban.models.Board;
+import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -10,19 +11,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.util.Objects;
-
 public class BoardCreationController {
     @FXML
     private TextField nameField;
 
     @FXML
     protected void closeWindow(ActionEvent event) {
-        final Node source = (Node) event.getSource();
-        final Stage stage = (Stage) source.getScene().getWindow();
-
-        stage.close();
+        WindowHelper.closeWindow(event);
     }
 
     @FXML
@@ -42,14 +37,11 @@ public class BoardCreationController {
             || nameField.getText().trim().matches(".*[<>:\"/\\\\|?*\\p{Cc}].*")
             || nameField.getText().trim().matches("\\.{1,3}")
         ) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.initOwner(stage);
-            alert.setTitle("Invalid name!");
-            alert.setHeaderText(null);
-            alert.setContentText("A Kanban Board must have a valid name!");
-            alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(getClass().getResource("/dialog-style.css")).toExternalForm());
-            Toolkit.getDefaultToolkit().beep();
-            alert.showAndWait();
+            WindowHelper.createGenericErrorWindow(
+                Alert.AlertType.WARNING,
+                "Invalid name!",
+                "A Kanban Board must have a valid name!"
+            );
         } else {
             KanbanController controller = KanbanApplication.getController();
             controller.setCurrentBoard(new Board(nameField.getText().trim()));

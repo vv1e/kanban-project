@@ -1,0 +1,68 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+    -fx-focus-color: #ff4c4c;
+    -fx-faint-focus-color: transparent;
+}
+.button:default {
+    -fx-base: #ff6c6c
+}
+
+.id-tag {
+    -fx-padding: 2 4 2 4;
+    -fx-background-color: #FFFFFF;
+    -fx-font-size: small;
+    -fx-text-fill: black;
+}
+
+.bug-tag {
+    -fx-padding: 2px;
+    -fx-background-color: #ff4c4c;
+    -fx-font-size: small;
+    -fx-font-weight: bold;
+    -fx-scale-shape: square;
+    -fx-text-fill: white;
+}
+
+.feature-tag {
+    -fx-padding: 2px;
+    -fx-background-color: #36cf7e;
+    -fx-font-weight: bold;
+    -fx-font-size: small;
+    -fx-scale-shape: square;
+    -fx-text-fill: white;
+}
+
+.item-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+.item-description {
+    -fx-text-fill: black;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+}
+
+.common-issue {
+    -fx-base: #e1cb91;
+    -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #ecd69d, #eccf86);
+    -fx-padding: 4px;
+    -fx-effect: dropshadow(one-pass-box, #00000026, 5, 0, 0, 2);
+}
+
+.common-column-list {
+    -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #fcfcf9, #f4f4f0);
+    -fx-background-radius: 0 0 5 5;
+    -fx-scale-x: 1;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0, 0;
+}
+
+.common-column {
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, #00000030, 10, 0, 0, 0);
+}

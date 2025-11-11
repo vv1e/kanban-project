@@ -13,7 +13,7 @@
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
-    stylesheets="/kanban-rootstyle.css"
+    stylesheets="/rootstyle.css, /kanban-style.css"
 >
     <top>
         <MenuBar
@@ -21,16 +21,16 @@
         >
             <Menu text="File">
                 <Menu text="New...">
-                    <MenuItem text="Kanban Board" onAction="#newBoard"/>
+                    <MenuItem text="Kanban Board" onAction="#menuNewBoard"/>
                     <MenuItem fx:id="menuFileNewCategory" text="Category" disable="true"/>
-                    <MenuItem fx:id="menuFileNewIssue" text="Issue" disable="true"/>
+                    <MenuItem fx:id="menuFileNewIssue" text="Issue" disable="true" onAction="#menuNewIssue"/>
                 </Menu>
                 <MenuItem text="Open..."/>
                 <SeparatorMenuItem/>
                 <MenuItem fx:id="menuFileSave" text="Save" disable="true"/>
                 <MenuItem fx:id="menuFileSaveAs" text="Save As..." disable="true"/>
                 <SeparatorMenuItem/>
-                <MenuItem fx:id="menuFileClose" text="Close Kanban Board" disable="true" onAction="#closeBoard"/>
+                <MenuItem fx:id="menuFileClose" text="Close Kanban Board" disable="true" onAction="#menuCloseBoard"/>
             </Menu>
             <Menu text="Help">
                 <MenuItem text="About Kanban" onAction="#openAboutWindow"/>

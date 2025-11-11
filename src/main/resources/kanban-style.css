@@ -1,0 +1,50 @@
+
+.kanban-boardname {
+    -fx-font-size: xx-large;
+    -fx-font-weight: bold;
+    -fx-padding: 5;
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5 0%, #dbdbdb 100%);
+}
+
+.kanban-openreminder {
+    -fx-font-size: large;
+    -fx-padding: 10 0 0 5;
+    -fx-background-color: linear-gradient(to top, #f5f5f5 0%, #cfcfcf 100%);
+}
+
+.kanban-container {
+    -fx-padding: 20 10 10 10;
+    -fx-background-color: linear-gradient(to top, #f5f5f5 0%, #cfcfcf 100%);
+}
+
+.kanban-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: -1;
+}
+
+.kanban-column-label-container {
+    -fx-effect: dropshadow(one-pass-box, #00000030, 10, 0, 0, 1);
+}
+
+.kanban-column-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 10 8 10 8;
+    -fx-background-color: #da371a;
+    -fx-text-fill: white;
+    -fx-background-radius: 5 5 0 0;
+    -fx-effect: innershadow(gaussian, #FFFFFF50, 3, 0, 0.0, 1)
+}
+
+.common-issue:hover {
+    -fx-background-color: #dcc07e;
+    -fx-cursor: pointer;
+}
+
+.list-cell:selected .common-issue {
+    -fx-border-style: dashed;
+    -fx-border-insets: -4;
+    -fx-border-color: darkgray;
+    -fx-border-width: 2;
+}

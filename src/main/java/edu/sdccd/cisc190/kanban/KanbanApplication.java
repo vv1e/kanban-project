@@ -22,6 +22,9 @@ public class KanbanApplication extends Application {
         CONTROLLER = fxmlLoader.getController();
     }
 
+    /**
+     * Returns the Controller for the main window.
+     */
     public static KanbanController getController() {
         return CONTROLLER;
     }

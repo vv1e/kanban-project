@@ -1,4 +1,4 @@
-package edu.sdccd.cisc190.kanban.util;
+package edu.sdccd.cisc190.kanban.models;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,7 +11,7 @@ public class Board {
     private final String name;
     private final ArrayList<ObservableList<Issue>> issueCategories;
     private final ArrayList<StringProperty> issueNames;
-    private final ArrayList<Integer> categoryStore;
+    private final ArrayList<Integer[]> categoryStore;
 
     public Board(String name) {
         this.name = name;
@@ -32,12 +32,13 @@ public class Board {
 
     public void createIssue(String name, String description, IssueType type, String creator) {
         issueCategories.getFirst().add(new Issue(name, description, creator, type, categoryStore.size()));
-        categoryStore.add(0);
+        categoryStore.add(new Integer[]{0, issueCategories.getFirst().size()-1});
     }
 
     // Do not use - will not work as-is.
     public Issue getIssue(int id) {
-        return issueCategories.get(categoryStore.get(id)).get(id);
+        final Integer[] indeces = categoryStore.get(id);
+        return issueCategories.get(indeces[0]).get(indeces[1]);
     }
 
     public ArrayList<ObservableList<Issue>> getIssues() {

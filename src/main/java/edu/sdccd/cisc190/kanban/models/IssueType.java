@@ -1,4 +1,4 @@
-package edu.sdccd.cisc190.kanban.util;
+package edu.sdccd.cisc190.kanban.models;
 
 public enum IssueType {
     BUG_REPORT,
