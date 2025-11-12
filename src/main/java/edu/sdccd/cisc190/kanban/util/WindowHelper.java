@@ -72,7 +72,7 @@ public class WindowHelper {
         }
     }
 
-    public static void loadErrorWindow(String windowName) {
+    public static void loadErrorWindow(String windowName, Stage stage) {
         createGenericErrorWindow(
             Alert.AlertType.ERROR,
             "Error Loading Window",
@@ -80,14 +80,16 @@ public class WindowHelper {
                 """
                 Kanban Project could not load the "%s" window.
                 Please send a bug report over Discord ASAP!""", windowName
-            )
+            ),
+            stage
         );
     }
 
-    public static void createGenericErrorWindow(Alert.AlertType type, String title, String body) {
+    public static void createGenericErrorWindow(Alert.AlertType type, String title, String body, Stage stage) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
+        alert.initOwner(stage);
         alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(KanbanApplication.class.getResource("/dialog-style.css")).toExternalForm());
         alert.setContentText(body);
         Toolkit.getDefaultToolkit().beep();

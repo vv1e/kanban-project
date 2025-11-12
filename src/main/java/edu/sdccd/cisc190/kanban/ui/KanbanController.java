@@ -1,22 +1,20 @@
 package edu.sdccd.cisc190.kanban.ui;
 
-import edu.sdccd.cisc190.kanban.ui.components.IssueCell;
+import edu.sdccd.cisc190.kanban.models.Category;
+import edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController;
 import edu.sdccd.cisc190.kanban.models.Board;
 import edu.sdccd.cisc190.kanban.models.Issue;
-import edu.sdccd.cisc190.kanban.models.IssueType;
+import edu.sdccd.cisc190.kanban.ui.components.IssueCell;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
+import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -30,7 +28,7 @@ public class KanbanController {
     @FXML private MenuBar menuBar;
     @FXML private Label welcomeLabel;
     @FXML private HBox kanbanColumns;
-    @FXML private Label openLabel;
+    @FXML private Label welcomeSubtitleLabel;
 
     @FXML private MenuItem menuFileNewCategory;
     @FXML private MenuItem menuFileNewIssue;
@@ -44,13 +42,21 @@ public class KanbanController {
         menuBar.setUseSystemMenuBar(System.getProperty("os.name").toLowerCase().contains("mac"));
 
         // Several categories are supposed to be inaccessible when there is no board loaded.
-        menuFileNewCategory.disableProperty().bind(isBoardLoaded.not());
-        menuFileNewIssue.disableProperty().bind(isBoardLoaded.not());
-        menuFileSave.disableProperty().bind(isBoardLoaded.not());
-        menuFileSaveAs.disableProperty().bind(isBoardLoaded.not());
-        menuFileClose.disableProperty().bind(isBoardLoaded.not());
-        openLabel.visibleProperty().bind(isBoardLoaded.not());
-        openLabel.managedProperty().bind(isBoardLoaded.not());
+        MenuItem[] boardDependentMenus = new MenuItem[]{
+            menuFileNewCategory,
+            menuFileNewIssue,
+            menuFileSave,
+            menuFileSaveAs,
+            menuFileClose
+        };
+
+        for (MenuItem menuItem : boardDependentMenus) {
+            menuItem.disableProperty().bind(isBoardLoaded.not());
+        }
+
+        welcomeSubtitleLabel.visibleProperty().bind(isBoardLoaded.not());
+        welcomeSubtitleLabel.managedProperty().bind(isBoardLoaded.not());
+
         kanbanColumns.visibleProperty().bind(isBoardLoaded);
         kanbanColumns.managedProperty().bind(isBoardLoaded);
     }
@@ -64,7 +70,7 @@ public class KanbanController {
                 "New Board"
             );
         } catch (IOException e) {
-            WindowHelper.loadErrorWindow("New Board");
+            WindowHelper.loadErrorWindow("New Board", (Stage) menuBar.getScene().getWindow());
         }
     }
 
@@ -83,11 +89,11 @@ public class KanbanController {
         try {
             WindowHelper.loadWindow(
                 IssueController.class.getResource("issue-view.fxml"),
-                300, 400, true,
+                400, 400, true,
                 new newIssueSetup()
             );
         } catch (IOException e) {
-            WindowHelper.loadErrorWindow("New Issue");
+            WindowHelper.loadErrorWindow("New Issue", (Stage) menuBar.getScene().getWindow());
         }
     }
 
@@ -105,7 +111,7 @@ public class KanbanController {
                 "About Kanban"
             );
         } catch (IOException e) {
-            WindowHelper.loadErrorWindow("About");
+            WindowHelper.loadErrorWindow("About", (Stage) menuBar.getScene().getWindow());
         }
     }
 
@@ -131,51 +137,15 @@ public class KanbanController {
 
                 welcomeLabel.setText(String.format("%s", board.getName()));
 
-                final ArrayList<StringProperty> issueCategoryNames = board.getIssueCategoryNames();
-                final ArrayList<ObservableList<Issue>> issueCategories = board.getIssues();
+                final ArrayList<Category> categories = board.getCategories();
 
                 // Creates the categories one by one
-                for (int i = 0; i < issueCategoryNames.size(); i++) {
-                    VBox categoryContainer = new VBox();
-                    VBox categoryLabelContainer = new VBox();
-                    Label categoryLabel = new Label(issueCategoryNames.get(i).get().toUpperCase());
-                    ListView<Issue> listView = new ListView<>(issueCategories.get(i));
+                for (Category category : categories) {
+                    VBox categoryBox = createCategoryBox(category);
 
-                    VBox.setVgrow(categoryContainer, Priority.ALWAYS);
-                    HBox.setHgrow(categoryContainer, Priority.ALWAYS);
-                    HBox.setHgrow(categoryLabel, Priority.ALWAYS);
-                    VBox.setVgrow(listView, Priority.ALWAYS);
-                    categoryContainer.setMinWidth(200.0d);
-                    categoryLabel.setMinWidth(200.0d);
-                    categoryLabel.setAlignment(Pos.CENTER_LEFT);
-                    categoryLabel.setMaxWidth(Double.MAX_VALUE);
-
-                    categoryLabel.setViewOrder(0);
-                    listView.setViewOrder(1);
-
-                    categoryContainer.getStyleClass().add("common-column");
-                    categoryLabelContainer.getStyleClass().add("kanban-column-label-container");
-                    categoryLabel.getStyleClass().add("kanban-column-label");
-                    listView.getStyleClass().add("common-column-list");
-
-                    listView.setCellFactory((issue -> {
-                        try {
-                            return new IssueCell();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }));
-
-                    categoryLabelContainer.getChildren().add(categoryLabel);
-                    categoryContainer.getChildren().addAll(categoryLabelContainer, listView);
-
-                    kanbanColumns.getChildren().add(categoryContainer);
+                    kanbanColumns.getChildren().add(categoryBox);
                 }
-
-                // PLACEHOLDER: You cannot add issues right now, this for testing.
-                board.createIssue("Lorem Ipsum", "Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit", IssueType.BUG_REPORT, "testUser");
-                board.createIssue("Ipsum Lorem", "Elit Adipiscing Consectetur, Amet Sit Dolor Ipsum Lorem", IssueType.FEATURE_REQUEST, "testUser");
-            } catch (Exception e) {
+            } catch (IOException | RuntimeIOException e) {
                 setBoardToDefault(stage);
 
                 WindowHelper.createGenericErrorWindow(
@@ -186,10 +156,28 @@ public class KanbanController {
                         There was an error while loading the "%s" Board.
                         Please try again later, or send a bug report through Discord.
                         """, board.getName()
-                    )
+                    ),
+                    stage
                 );
             }
         }
+    }
+
+    private VBox createCategoryBox(Category category) throws IOException, RuntimeIOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(KanbanController.class.getResource("components/category-box.fxml"));
+        VBox categoryBox = fxmlLoader.load();
+        CategoryBoxController controller =  fxmlLoader.getController();
+        controller.categoryLabel.setText(category.getName());
+        controller.categoryListView.setItems(category.getIssues());
+        controller.categoryListView.setCellFactory((issue -> {
+            try {
+                return new IssueCell();
+            } catch (IOException e) {
+                throw new RuntimeIOException(e);
+            }
+        }));
+
+        return categoryBox;
     }
 
     public void openIssue(Issue issue) {
@@ -208,11 +196,11 @@ public class KanbanController {
         try {
             WindowHelper.loadWindow(
                 IssueController.class.getResource("issue-view.fxml"),
-                600, 400, true,
+                700, 400, true,
                 new openIssueWindowSetup()
             );
         } catch (IOException e) {
-            WindowHelper.loadErrorWindow("Issue Detail");
+            WindowHelper.loadErrorWindow("Issue Detail", (Stage) menuBar.getScene().getWindow());
         }
     }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    styleClass="comment-box"
+>
+    <HBox alignment="CENTER_LEFT">
+        <Label fx:id="commentAuthorLabel" styleClass="comment-author-label" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+        <Label fx:id="commentDateLabel" styleClass="comment-date-label"/>
+    </HBox>
+    <Label fx:id="commentTextLabel" styleClass="comment-text-label"/>
+</VBox>

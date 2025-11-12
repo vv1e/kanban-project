@@ -40,8 +40,7 @@ public class Issue {
         this.dateModified = LocalDateTime.now();
 
         this.comments = FXCollections.observableArrayList();
-        this.comments.add(new Comment("testUser", "Lorem Ipsum Dolor Sit Amet\nTest123\nHello World"));
-        this.comments.add(new Comment("testUser", "Lorem Ipsum Dolor Sit Amet\nTest123\nHello World"));
+        this.addComment("System", "Issue created.");
     }
 
     public int getId() {
@@ -62,20 +61,6 @@ public class Issue {
 
     public IssueType getType() {
         return type;
-    }
-
-    public String getTypeLetter() {
-        return switch (type) {
-            case BUG_REPORT -> "B";
-            case FEATURE_REQUEST -> "F";
-        };
-    }
-
-    public String getTypeStyle() {
-        return switch (type) {
-            case BUG_REPORT -> "bug-tag";
-            case FEATURE_REQUEST -> "feature-tag";
-        };
     }
 
     public String getCreator() {

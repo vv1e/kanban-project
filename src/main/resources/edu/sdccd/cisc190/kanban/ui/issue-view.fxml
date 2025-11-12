@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
 <VBox
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
@@ -18,16 +19,21 @@
 >
     <HBox VBox.vgrow="ALWAYS" spacing="10">
         <VBox fx:id="issueBox" spacing="5" styleClass="common-issue" HBox.hgrow="SOMETIMES">
-            <HBox fx:id="propertiesBox">
-                <Label fx:id="tagLabel" alignment="CENTER" prefHeight="18" prefWidth="18">B</Label>
-                <Label fx:id="idLabel" styleClass="id-tag" prefHeight="18">#123456</Label>
+            <HBox HBox.hgrow="SOMETIMES">
+                <VBox HBox.hgrow="SOMETIMES" spacing="5">
+                    <HBox fx:id="propertiesBox">
+                        <Label fx:id="tagLabel" styleClass="common-tag" alignment="CENTER" prefHeight="18" prefWidth="18">B</Label>
+                        <Label fx:id="idLabel" styleClass="id-tag" prefHeight="18">#123456</Label>
+                    </HBox>
+                    <VBox HBox.hgrow="ALWAYS" spacing="5">
+                        <Label fx:id="issueTitleLabel" styleClass="issue-creation-label">
+                            TITLE:
+                        </Label>
+                        <TextField fx:id="issueTitleField" styleClass="issue-title" promptText="Title" HBox.hgrow="SOMETIMES" maxWidth="Infinity"/>
+                    </VBox>
+                </VBox>
+                <ComboBox fx:id="issueCategoryComboBox" onAction="#onComboBoxChangeCategory"/>
             </HBox>
-            <VBox HBox.hgrow="ALWAYS" spacing="5">
-                <Label fx:id="issueTitleLabel" styleClass="issue-creation-label">
-                    TITLE:
-                </Label>
-                <TextField fx:id="issueTitleField" promptText="Title" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            </VBox>
             <VBox HBox.hgrow="ALWAYS" spacing="5">
                 <Label fx:id="issueAuthorLabel" styleClass="issue-creation-label">AUTHOR:</Label>
                 <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
@@ -46,6 +52,7 @@
             <HBox fx:id="toggleBox" HBox.hgrow="ALWAYS">
                 <ToggleButton fx:id="bugToggle" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
                 <ToggleButton fx:id="featureToggle" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
+                <ToggleButton fx:id="taskToggle" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
             </HBox>
             <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" spacing="5">
                 <Label fx:id="issueDescriptionLabel" styleClass="issue-creation-label">
