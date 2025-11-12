@@ -9,11 +9,18 @@ import edu.sdccd.cisc190.kanban.models.Issue;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class IssueController {
+    protected Issue issue;
     @FXML private VBox issueBox;
 
     @FXML private HBox propertiesBox;
@@ -95,6 +102,8 @@ public class IssueController {
      * @param issue Issue to be viewed
      */
     public void setIssue(Issue issue) {
+        this.issue = issue;
+
         issueTitleField.setText(issue.getName());
         issueTitleField.getStyleClass().add("issue-title");
         issueAuthorField.setText(issue.getCreator());
@@ -120,9 +129,24 @@ public class IssueController {
 
         WindowHelper.closeWindow(event);
     }
-
+    private void updateAssigneeLabel() {
+        issueAssigneeLabel.setText("Assignee: " + issue.getAssignee());
+    }
     @FXML
     private void closeWindow(ActionEvent event) {
         WindowHelper.closeWindow(event);
+    }
+    @FXML
+    private void openAssigneeDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("assignee-name.fxml"));
+        Stage dialogStage = new Stage();
+        dialogStage.setScene(new Scene(loader.load()));
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+
+        AssigneeController controller = loader.getController();
+        controller.setIssue(issue);
+        controller.setOnChangeCallback(this::updateAssigneeLabel);
+
+        dialogStage.showAndWait();
     }
 }
