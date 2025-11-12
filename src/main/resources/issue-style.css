@@ -42,6 +42,10 @@
 }
 
 .feature-toggle {
+    -fx-background-radius: 0;
+}
+
+.task-toggle {
     -fx-background-radius: 0 4 4 0;
 }
 

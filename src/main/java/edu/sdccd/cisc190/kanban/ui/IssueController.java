@@ -8,6 +8,7 @@ import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
 import edu.sdccd.cisc190.kanban.util.ObjectHelper;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
+import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,8 +18,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class IssueController {
+    private Issue issue;
+
     @FXML private VBox issueBox;
 
     @FXML private HBox propertiesBox;
@@ -29,10 +34,13 @@ public class IssueController {
 
     @FXML private ToggleButton bugToggle;
     @FXML private ToggleButton featureToggle;
+    @FXML private ToggleButton taskToggle;
 
     @FXML private TextField issueTitleField;
     @FXML private TextField issueAuthorField;
     @FXML private TextArea issueDescriptionArea;
+
+    @FXML private ComboBox<String> issueCategoryComboBox;
 
     @FXML private Label issueTitleLabel;
     @FXML private Label issueAuthorLabel;
@@ -48,7 +56,7 @@ public class IssueController {
     @FXML
     protected void initialize() {
         ToggleGroup group = new ToggleGroup();
-        group.getToggles().addAll(bugToggle, featureToggle);
+        group.getToggles().addAll(bugToggle, featureToggle, taskToggle);
 
         try {
             commentList.setCellFactory(comment -> {
@@ -77,12 +85,29 @@ public class IssueController {
      */
     public void setIsIssueBeingCreated(boolean issueBeingCreated) {
         if (issueBeingCreated) {
-            ObjectHelper.removeNodes(propertiesBox, commentsBox, issueAuthorByLabel, issueAssigneeBox);
+            ObjectHelper.removeNodes(
+                propertiesBox,
+                commentsBox,
+                issueAuthorByLabel,
+                issueAssigneeBox,
+                issueCategoryComboBox
+            );
             issueBox.getStyleClass().clear();
+            issueTitleField.getStyleClass().remove("issue-title");
         } else {
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
-            ObjectHelper.removeNodes(toggleBox, createButtonBox, issueTitleLabel, issueAuthorLabel, issueDescriptionLabel);
-            ObjectHelper.setControlToReadonly(issueTitleField, issueDescriptionArea, issueAuthorField);
+            ObjectHelper.removeNodes(
+                toggleBox,
+                createButtonBox,
+                issueTitleLabel,
+                issueAuthorLabel,
+                issueDescriptionLabel
+            );
+            ObjectHelper.setControlToReadonly(
+                issueTitleField,
+                issueDescriptionArea,
+                issueAuthorField
+            );
         }
     }
 
@@ -91,16 +116,28 @@ public class IssueController {
      * @param issue Issue to be viewed
      */
     public void setIssue(Issue issue) {
+        final Board board = KanbanApplication.getController().getBoard();
+
+        this.issue = issue;
+
         issueTitleField.setText(issue.getName());
-        issueTitleField.getStyleClass().add("issue-title");
         issueAuthorField.setText(issue.getCreator());
         issueDescriptionArea.setText(issue.getDescription());
-        tagLabel.setText(issue.getTypeLetter());
-        tagLabel.getStyleClass().add(issue.getTypeStyle());
+        tagLabel.setText(issue.getType().getLetter());
+        tagLabel.getStyleClass().add(issue.getType().getTagStyle());
         idLabel.setText(issue.getIdString());
         issueAssigneeLabel.setText(String.format("Assignee: %s", issue.getAssignee()));
 
-        commentList.getItems().addAll(issue.getComments());
+        commentList.setItems(issue.getComments());
+
+        final String[] categoriesNames = board.getCategoriesNames();
+        issueCategoryComboBox.getItems().addAll(categoriesNames);
+
+        try {
+            issueCategoryComboBox.setValue(categoriesNames[board.getCategoryOfIssue(issue.getId())]);
+        } catch (IssueNotFoundException e) {
+            throw new RuntimeException("Unexpected IssueNotFoundException", e);
+        }
     }
 
     @FXML
@@ -123,6 +160,8 @@ public class IssueController {
             type = IssueType.BUG_REPORT;
         } else if (featureToggle.isSelected()) {
             type = IssueType.FEATURE_REQUEST;
+        } else if (taskToggle.isSelected()) {
+            type = IssueType.TASK;
         } else {
             issueProblems[problemNumber++] = " - The issue type must be specified.";
         }
@@ -133,10 +172,10 @@ public class IssueController {
 
         if (problemNumber == 0) {
             board.createIssue(
-                issueTitleField.getText(),
-                issueDescriptionArea.getText(),
+                issueTitleField.getText().trim(),
+                issueDescriptionArea.getText().trim(),
                 type,
-                issueAuthorField.getText()
+                issueAuthorField.getText().trim()
             );
 
             WindowHelper.closeWindow(event);
@@ -164,5 +203,20 @@ public class IssueController {
     @FXML
     private void closeWindow(ActionEvent event) {
         WindowHelper.closeWindow(event);
+    }
+
+    @FXML
+    private void onComboBoxChangeCategory() {
+        final Board board = KanbanApplication.getController().getBoard();
+        final List<String> categoriesNamesList = Arrays.asList(board.getCategoriesNames());
+
+        String categoryName = issueCategoryComboBox.getValue();
+        int categoryId = categoriesNamesList.indexOf(categoryName);
+
+        try {
+            board.moveIssue(issue.getId(), categoryId);
+        } catch (IssueNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

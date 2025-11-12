@@ -16,6 +16,10 @@ public class Category {
         issues.add(issue);
     }
 
+    public void removeIssue(int issuePosition) {
+        issues.remove(issuePosition);
+    }
+
     public String getName() {
         return name;
     }

@@ -8,5 +8,4 @@ import javafx.scene.control.ListView;
 public class CategoryBoxController {
     @FXML public Label categoryLabel;
     @FXML public ListView<Issue> categoryListView;
-
 }

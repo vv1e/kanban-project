@@ -4,6 +4,7 @@ module edu.sdccd.cisc190.kanban {
     requires java.desktop;
     requires javafx.base;
     requires javafx.graphics;
+    requires java.management;
 
     opens edu.sdccd.cisc190.kanban to javafx.fxml;
     exports edu.sdccd.cisc190.kanban;

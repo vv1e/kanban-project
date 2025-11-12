@@ -63,20 +63,6 @@ public class Issue {
         return type;
     }
 
-    public String getTypeLetter() {
-        return switch (type) {
-            case BUG_REPORT -> "B";
-            case FEATURE_REQUEST -> "F";
-        };
-    }
-
-    public String getTypeStyle() {
-        return switch (type) {
-            case BUG_REPORT -> "bug-tag";
-            case FEATURE_REQUEST -> "feature-tag";
-        };
-    }
-
     public String getCreator() {
         return creator;
     }

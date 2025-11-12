@@ -1,7 +1,10 @@
 package edu.sdccd.cisc190.kanban.models;
 
+import edu.sdccd.cisc190.kanban.Launcher;
 import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +44,7 @@ public class Board {
         Arrays.fill(issueIdToCategoryId, -1);
 
         issueIdToPlacementInCategory = new int[10];
+        Arrays.fill(issueIdToPlacementInCategory, -1); // Easier for debugging
 
         String[] defaultCategories = new String[]{
             "Backlog",
@@ -53,11 +57,18 @@ public class Board {
         for (String categoryName : defaultCategories) {
             categories.add(new Category(categoryName));
         }
+
+        // These issues only appear if the Kanban Board Program is run through a debugger.
+        if (Launcher.DEBUG_MODE_ENABLED) {
+            createIssue("Bug", "This is a bug", IssueType.BUG_REPORT, "Debug");
+            createIssue("Feature", "This is a feature", IssueType.FEATURE_REQUEST, "Debug2");
+            createIssue("Task", "This is a task", IssueType.TASK, "Debug3");
+        }
     }
 
     public void createIssue(String name, String description, IssueType type, String creator) {
         categories.getFirst().addIssue(new Issue(name, description, creator, type, issueLatest));
-        storeIssueCategoryBindings(issueLatest++, 0);
+        updateIssueCoordinateMapping(issueLatest++, 0);
     }
 
     public Issue getIssue(int id) throws IssueNotFoundException {
@@ -73,9 +84,43 @@ public class Board {
         return issue;
     }
 
-    public ArrayList<Category> getIssueCategories() {
+    public int getCategoryOfIssue(int id) throws IssueNotFoundException {
+        if (issueIdToCategoryId[id] == -1) {
+            throw new IssueNotFoundException(id);
+        } else {
+            return issueIdToCategoryId[id];
+        }
+    }
+
+    public void moveIssue(int issueId, int categoryId) throws IssueNotFoundException {
+        if (issueIdToCategoryId[issueId] == -1) {
+            throw new IssueNotFoundException(issueId);
+        }
+
+        final Issue issue = getIssue(issueId);
+        final int originalCategoryId = getCategoryOfIssue(issueId);
+
+        categories.get(categoryId).addIssue(issue);
+        categories.get(originalCategoryId).removeIssue(issueIdToPlacementInCategory[issueId]);
+
+        refreshCategoryMappings(originalCategoryId);
+        updateIssueCoordinateMapping(issueId, categoryId);
+
+//        issue.addComment(
+//            "System",
+//            String.format("Issue moved to \"%s.\"", getCategoriesNames()[categoryId])
+//        );
+        // ^^^^^^ Hii Nishka this is technically your part sorry lolll
+    }
+
+    public ArrayList<Category> getCategories() {
         return categories;
     }
+
+    public String[] getCategoriesNames() {
+        return categories.stream().map(Category::getName).toArray(String[]::new);
+    }
+
     public String getName() {
         return name;
     }
@@ -85,18 +130,33 @@ public class Board {
      * @param issueId The Issue ID
      * @param categoryId Category it was moved to.
      */
-    private void storeIssueCategoryBindings(int issueId, int categoryId) {
+    private void updateIssueCoordinateMapping(int issueId, int categoryId) {
         issueIdToCategoryId = checkAndExpandArray(issueIdToCategoryId, issueId);
         issueIdToPlacementInCategory = checkAndExpandArray(issueIdToPlacementInCategory, issueId);
 
         issueIdToCategoryId[issueId] = categoryId;
-        issueIdToPlacementInCategory[issueId] = categories.getFirst().size()-1;
+        issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size()-1;
+    }
+
+    /**
+     * Refresh a category's issues' coordinate mappings.
+     * @param categoryId Category ID.
+     */
+    private void refreshCategoryMappings(int categoryId) {
+        final Category category = categories.get(categoryId);
+        final ObservableList<Issue> tempIssueList = FXCollections.observableArrayList(category.getIssues());
+
+        category.getIssues().clear();
+        for (Issue issue : tempIssueList) {
+            category.getIssues().add(issue);
+            updateIssueCoordinateMapping(issue.getId(), categoryId);
+        }
     }
 
     private int[] checkAndExpandArray(int[] array, int index) {
         if (index >= array.length) {
             int[] tempArray = Arrays.copyOf(array, array.length * 2);
-            Arrays.fill(tempArray, array.length, tempArray.length-1, -1);
+            Arrays.fill(tempArray, array.length, tempArray.length, -1);
             array = tempArray;
         }
 

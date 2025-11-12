@@ -14,22 +14,25 @@
     -fx-text-fill: black;
 }
 
-.bug-tag {
-    -fx-padding: 2px;
-    -fx-background-color: #ff4c4c;
+.common-tag {
     -fx-font-size: small;
     -fx-font-weight: bold;
     -fx-scale-shape: square;
     -fx-text-fill: white;
+    -fx-padding: 2px;
+}
+
+
+.bug-tag {
+    -fx-background-color: #ff4c4c;
 }
 
 .feature-tag {
-    -fx-padding: 2px;
     -fx-background-color: #36cf7e;
-    -fx-font-weight: bold;
-    -fx-font-size: small;
-    -fx-scale-shape: square;
-    -fx-text-fill: white;
+}
+
+.task-tag {
+    -fx-background-color: #4e504e;
 }
 
 .item-title {
@@ -65,4 +68,48 @@
 .common-column {
     -fx-background-radius: 5;
     -fx-effect: dropshadow(three-pass-box, #00000030, 10, 0, 0, 0);
+}
+
+.context-menu,
+.combo-box-popup .list-view {
+    -fx-padding: 4;
+    -fx-font-size: 12;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+}
+
+.combo-box-popup .list-view {
+    -fx-translate-y: 2;
+}
+
+.context-menu .separator {
+    -fx-padding: 2 0 2 0;
+}
+
+.context-menu .menu-item,
+.combo-box-popup .list-cell {
+    -fx-border-width: 2;
+    -fx-border-color: transparent;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+}
+
+.context-menu .menu-item:focused,
+.combo-box-popup .list-cell:focused,
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #ff6c6c;
+    -fx-border-color: #ff4c4c;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-opacity: 0.75;
+}
+
+.menu-bar {
+    -fx-font-size: 12;
+}
+
+.menu-bar .menu:hover,
+.menu-bar .menu:showing {
+    -fx-background-color: #ff6c6c;
 }

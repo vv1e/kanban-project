@@ -10,9 +10,19 @@
     minWidth="150"
     styleClass="common-issue"
 >
+    <fx:define>
+        <ContextMenu fx:id="contextMenu">
+            <items>
+                <MenuItem fx:id="contextMenuOpen" text="Open"/>
+                <SeparatorMenuItem/>
+                <Menu fx:id="contextMenuMove" text="Move"/>
+            </items>
+        </ContextMenu>
+    </fx:define>
+
     <VBox minWidth="0" spacing="3">
         <HBox>
-            <Label fx:id="tagLabel" minWidth="18" minHeight="18" alignment="CENTER">B</Label>
+            <Label styleClass="common-tag" fx:id="tagLabel" minWidth="18" minHeight="18" alignment="CENTER">B</Label>
             <Label styleClass="id-tag" fx:id="idLabel" prefHeight="18">#123456</Label>
         </HBox>
         <Label fx:id="titleLabel" styleClass="item-title" minWidth="0">

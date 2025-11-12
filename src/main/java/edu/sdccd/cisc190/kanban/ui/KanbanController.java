@@ -89,7 +89,7 @@ public class KanbanController {
         try {
             WindowHelper.loadWindow(
                 IssueController.class.getResource("issue-view.fxml"),
-                300, 400, true,
+                400, 400, true,
                 new newIssueSetup()
             );
         } catch (IOException e) {
@@ -137,7 +137,7 @@ public class KanbanController {
 
                 welcomeLabel.setText(String.format("%s", board.getName()));
 
-                final ArrayList<Category> categories = board.getIssueCategories();
+                final ArrayList<Category> categories = board.getCategories();
 
                 // Creates the categories one by one
                 for (Category category : categories) {
@@ -196,7 +196,7 @@ public class KanbanController {
         try {
             WindowHelper.loadWindow(
                 IssueController.class.getResource("issue-view.fxml"),
-                600, 400, true,
+                700, 400, true,
                 new openIssueWindowSetup()
             );
         } catch (IOException e) {
