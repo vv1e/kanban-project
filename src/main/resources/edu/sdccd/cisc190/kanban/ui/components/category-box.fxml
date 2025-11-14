@@ -4,6 +4,9 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <VBox
     xmlns="http://javafx.com/javafx"
     xmlns:fx="http://javafx.com/fxml"
@@ -14,8 +17,18 @@
     styleClass="common-column"
     fx:controller="edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController"
 >
-    <VBox styleClass="kanban-column-label-container" viewOrder="0" alignment="CENTER_LEFT">
-        <Label fx:id="categoryLabel" styleClass="kanban-column-label" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    <VBox fx:id="categoryRootBox" styleClass="kanban-column-label-container" viewOrder="0" alignment="CENTER_LEFT">
+        <HBox styleClass="kanban-column-label" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label fx:id="categoryLabel" styleClass="kanban-column-label-text" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <MenuButton text="☰" alignment="CENTER">
+                <items>
+                    <MenuItem text="Rename" onAction="#onRenameAction"/>
+                    <MenuItem text="Move" onAction="#onMoveAction"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Delete" onAction="#onRemoveAction"/>
+                </items>
+            </MenuButton>
+        </HBox>
     </VBox>
-    <ListView fx:id="categoryListView" viewOrder="1" styleClass="common-column-list" VBox.vgrow="ALWAYS"/>
+    <ListView fx:id="categoryListView" viewOrder="1" styleClass="common-column-list" VBox.vgrow="ALWAYS" focusTraversable="false"/>
 </VBox>

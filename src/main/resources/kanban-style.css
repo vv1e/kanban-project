@@ -28,13 +28,35 @@
 }
 
 .kanban-column-label {
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-padding: 10 8 10 8;
+    -fx-padding: 5;
     -fx-background-color: #da371a;
-    -fx-text-fill: white;
     -fx-background-radius: 5 5 0 0;
     -fx-effect: innershadow(gaussian, #FFFFFF50, 3, 0, 0.0, 1)
+}
+
+.kanban-column-label-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 0 2;
+}
+
+.menu-button {
+    -fx-base: #cc351a;
+}
+
+.menu-button > .arrow-button {
+    /* Set padding of the arrow button container to zero */
+    -fx-padding: 0;
+}
+
+.menu-button > .arrow-button > .arrow {
+    /* Set padding of the arrow graphic to zero */
+    -fx-padding: 0;
+}
+
+.menu-button .context-menu {
+    -fx-base: #ececec;
 }
 
 .common-issue:hover {

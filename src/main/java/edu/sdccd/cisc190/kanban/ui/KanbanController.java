@@ -4,7 +4,6 @@ import edu.sdccd.cisc190.kanban.models.Category;
 import edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController;
 import edu.sdccd.cisc190.kanban.models.Board;
 import edu.sdccd.cisc190.kanban.models.Issue;
-import edu.sdccd.cisc190.kanban.ui.components.IssueCell;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
@@ -75,6 +74,19 @@ public class KanbanController {
     }
 
     @FXML
+    private void menuNewCategory() {
+        try {
+            WindowHelper.loadWindow(
+                CategoryNameSetController.class.getResource("category-name-change-view.fxml"),
+                300, 165, false,
+                "New Category"
+            );
+        } catch (IOException e) {
+            WindowHelper.loadErrorWindow("New Category", (Stage) menuBar.getScene().getWindow());
+        }
+    }
+
+    @FXML
     private void menuNewIssue() {
         class newIssueSetup implements WindowSetup {
             @Override
@@ -141,9 +153,7 @@ public class KanbanController {
 
                 // Creates the categories one by one
                 for (Category category : categories) {
-                    VBox categoryBox = createCategoryBox(category);
-
-                    kanbanColumns.getChildren().add(categoryBox);
+                    createCategoryBox(category);
                 }
             } catch (IOException | RuntimeIOException e) {
                 setBoardToDefault(stage);
@@ -163,21 +173,23 @@ public class KanbanController {
         }
     }
 
-    private VBox createCategoryBox(Category category) throws IOException, RuntimeIOException {
+    void createCategoryBox(Category category) throws IOException, RuntimeIOException {
         FXMLLoader fxmlLoader = new FXMLLoader(KanbanController.class.getResource("components/category-box.fxml"));
         VBox categoryBox = fxmlLoader.load();
         CategoryBoxController controller =  fxmlLoader.getController();
-        controller.categoryLabel.setText(category.getName());
-        controller.categoryListView.setItems(category.getIssues());
-        controller.categoryListView.setCellFactory((issue -> {
-            try {
-                return new IssueCell();
-            } catch (IOException e) {
-                throw new RuntimeIOException(e);
-            }
-        }));
+        controller.setCategory(category);
 
-        return categoryBox;
+        kanbanColumns.getChildren().add(categoryBox);
+    }
+
+    public void removeCategoryBox(int categoryId) {
+        kanbanColumns.getChildren().remove(categoryId);
+    }
+
+    public void moveCategoryBox(int oldCategoryId, int newCategoryId) {
+        VBox categoryBox = (VBox) kanbanColumns.getChildren().get(oldCategoryId);
+        kanbanColumns.getChildren().remove(oldCategoryId);
+        kanbanColumns.getChildren().add(newCategoryId, categoryBox);
     }
 
     public void openIssue(Issue issue) {

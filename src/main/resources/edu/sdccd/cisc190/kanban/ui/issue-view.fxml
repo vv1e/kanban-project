@@ -70,7 +70,7 @@
                     <Button text="Add Comment" HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
-            <ListView viewOrder="1" fx:id="commentList" styleClass="common-column-list" prefHeight="200" prefWidth="200" VBox.vgrow="ALWAYS"/>
+            <ListView viewOrder="1" fx:id="commentList" styleClass="common-column-list" prefHeight="200" prefWidth="200" VBox.vgrow="ALWAYS" focusTraversable="false"/>
         </VBox>
     </HBox>
     <HBox styleClass="issue-create-box" fx:id="createButtonBox" alignment="BOTTOM_RIGHT" spacing="5" VBox.vgrow="NEVER">

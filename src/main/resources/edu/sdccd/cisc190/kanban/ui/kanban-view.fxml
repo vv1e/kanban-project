@@ -22,7 +22,7 @@
             <Menu text="File">
                 <Menu text="New...">
                     <MenuItem text="Kanban Board" onAction="#menuNewBoard"/>
-                    <MenuItem fx:id="menuFileNewCategory" text="Category" disable="true"/>
+                    <MenuItem fx:id="menuFileNewCategory" text="Category" disable="true" onAction="#menuNewCategory"/>
                     <MenuItem fx:id="menuFileNewIssue" text="Issue" disable="true" onAction="#menuNewIssue"/>
                 </Menu>
                 <MenuItem text="Open..."/>

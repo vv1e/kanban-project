@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.stage.Modality;
@@ -85,15 +86,31 @@ public class WindowHelper {
         );
     }
 
-    public static void createGenericErrorWindow(Alert.AlertType type, String title, String body, Stage stage) {
+    private static Alert createAlert(Alert.AlertType type, String title, String body, Stage stage) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.initOwner(stage);
         alert.getDialogPane().getStylesheets().add(Objects.requireNonNull(KanbanApplication.class.getResource("/dialog-style.css")).toExternalForm());
         alert.setContentText(body);
+
+        return alert;
+    }
+
+    public static void createGenericErrorWindow(Alert.AlertType type, String title, String body, Stage stage) {
+        Alert alert = createAlert(type, title, body, stage);
+
         Toolkit.getDefaultToolkit().beep();
         alert.showAndWait();
+    }
+
+    public static Alert createConfirmationAlert(Alert.AlertType type, String title, String body, Stage stage) {
+        Alert alert = createAlert(type, title, body, stage);
+        alert.getButtonTypes().setAll(ButtonType.NO, ButtonType.YES);
+
+        alert.showAndWait();
+
+        return alert;
     }
 
     public static void closeWindow(Event event) {

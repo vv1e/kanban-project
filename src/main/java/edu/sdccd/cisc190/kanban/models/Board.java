@@ -3,8 +3,7 @@ package edu.sdccd.cisc190.kanban.models;
 import edu.sdccd.cisc190.kanban.Launcher;
 import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,19 +97,33 @@ public class Board {
         }
 
         final Issue issue = getIssue(issueId);
+        final int issueCategoryIndex = issueIdToPlacementInCategory[issueId];
+
         final int originalCategoryId = getCategoryOfIssue(issueId);
+        final Category originalCategory = categories.get(originalCategoryId);
 
         categories.get(categoryId).addIssue(issue);
-        categories.get(originalCategoryId).removeIssue(issueIdToPlacementInCategory[issueId]);
+        originalCategory.removeIssue(issueCategoryIndex);
 
-        refreshCategoryMappings(originalCategoryId);
+        for (Issue categoryIssue : originalCategory.getIssues()) {
+            if (issueIdToPlacementInCategory[categoryIssue.getId()] > issueCategoryIndex) {
+                issueIdToPlacementInCategory[categoryIssue.getId()] -= 1;
+            }
+        }
+
         updateIssueCoordinateMapping(issueId, categoryId);
 
-//        issue.addComment(
-//            "System",
-//            String.format("Issue moved to \"%s.\"", getCategoriesNames()[categoryId])
-//        );
-        // ^^^^^^ Hii Nishka this is technically your part sorry lolll
+        issue.addComment(
+            "System",
+            String.format("Issue moved to \"%s.\"", getCategoriesNames()[categoryId])
+        );
+    }
+
+    public Category createCategory(String name) {
+        Category category = new Category(name);
+        categories.add(category);
+
+        return category;
     }
 
     public ArrayList<Category> getCategories() {
@@ -119,6 +132,59 @@ public class Board {
 
     public String[] getCategoriesNames() {
         return categories.stream().map(Category::getName).toArray(String[]::new);
+    }
+
+    private Category popCategory(int categoryId) {
+        final Category category = categories.get(categoryId);
+        categories.remove(categoryId);
+
+        for (int i = 0; i < issueIdToCategoryId.length; i++) {
+            if (issueIdToCategoryId[i] > categoryId) {
+                issueIdToCategoryId[i] -= 1;
+            }
+        }
+
+        for (Issue issue : category.getIssues()) {
+            issueIdToCategoryId[issue.getId()] = -1;
+        }
+
+        return category;
+    }
+
+    public void moveCategory(int oldCategoryId, int newCategoryId) {
+        final Category category = popCategory(oldCategoryId);
+
+        for (int i = 0; i < issueIdToCategoryId.length; i++) {
+            if (issueIdToCategoryId[i] >= newCategoryId) {
+                issueIdToCategoryId[i] += 1;
+            }
+        }
+
+        categories.add(newCategoryId, category);
+
+        for (Issue issue : category.getIssues()) {
+            issueIdToCategoryId[issue.getId()] = newCategoryId;
+        }
+    }
+
+    public void removeCategory(int categoryId) throws LastCategoryDeletionException {
+        if (categories.size() == 1) {
+            throw new LastCategoryDeletionException(this.name);
+        }
+
+        final Category category = popCategory(categoryId);
+        final int newCategoryId = categoryId == 0? categoryId : categoryId - 1;
+        final Category newCategory = categories.get(newCategoryId);
+
+        for (Issue issue : category.getIssues()) {
+            newCategory.addIssue(issue);
+            updateIssueCoordinateMapping(issue.getId(), newCategoryId);
+
+            issue.addComment(
+                "System",
+                String.format("Issue moved to \"%s\" due to the removal of \"%s.\"", newCategory.getName(), category.getName())
+            );
+        }
     }
 
     public String getName() {
@@ -136,21 +202,6 @@ public class Board {
 
         issueIdToCategoryId[issueId] = categoryId;
         issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size()-1;
-    }
-
-    /**
-     * Refresh a category's issues' coordinate mappings.
-     * @param categoryId Category ID.
-     */
-    private void refreshCategoryMappings(int categoryId) {
-        final Category category = categories.get(categoryId);
-        final ObservableList<Issue> tempIssueList = FXCollections.observableArrayList(category.getIssues());
-
-        category.getIssues().clear();
-        for (Issue issue : tempIssueList) {
-            category.getIssues().add(issue);
-            updateIssueCoordinateMapping(issue.getId(), categoryId);
-        }
     }
 
     private int[] checkAndExpandArray(int[] array, int index) {

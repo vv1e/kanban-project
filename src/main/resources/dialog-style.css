@@ -16,3 +16,7 @@
 .baseline-message {
     -fx-padding: 0 0 10 0;
 }
+
+.list-view:disabled {
+    -fx-opacity: 1;
+}

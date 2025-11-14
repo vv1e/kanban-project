@@ -9,6 +9,7 @@
     HBox.hgrow="SOMETIMES"
     minWidth="150"
     styleClass="common-issue"
+    focusTraversable="true"
 >
     <fx:define>
         <ContextMenu fx:id="contextMenu">
