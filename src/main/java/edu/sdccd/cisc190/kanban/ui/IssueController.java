@@ -10,6 +10,7 @@ import edu.sdccd.cisc190.kanban.util.ObjectHelper;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
+import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,10 +18,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class IssueController {
     protected Issue issue;
@@ -199,25 +201,33 @@ public class IssueController {
             );
         }
     }
+
+    @FXML
+    private void openAssigneeDialog() throws IOException {
+        class assigneeNameViewSetup implements WindowSetup {
+            @Override
+            public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
+                AssigneeController controller = fxmlLoader.getController();
+                controller.setIssue(issue);
+                controller.setOnChangeCallback(IssueController.this::updateAssigneeLabel);
+
+                stage.setTitle("Change Assignee");
+
+                // Annoying ding fix
+                stage.initOwner(issueBox.getScene().getWindow());
+            }
+        }
+
+        WindowHelper.loadWindow(
+            AssigneeController.class.getResource("assignee-name-view.fxml"),
+            300, 150, false,
+            new assigneeNameViewSetup()
+        );
+    }
+
     private void updateAssigneeLabel() {
         issueAssigneeLabel.setText("Assignee: " + issue.getAssignee());
     }
-    @FXML
-    private void closeWindow(ActionEvent event) {
-        WindowHelper.closeWindow(event);
-    }
-    @FXML
-    private void openAssigneeDialog() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("assignee-name.fxml"));
-        Stage dialogStage = new Stage();
-        dialogStage.setScene(new Scene(loader.load()));
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-
-        AssigneeController controller = loader.getController();
-        controller.setIssue(issue);
-        controller.setOnChangeCallback(this::updateAssigneeLabel);
-
-        dialogStage.showAndWait(); }
 
     @FXML
     private void onComboBoxChangeCategory() {
@@ -232,5 +242,10 @@ public class IssueController {
         } catch (IssueNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void closeWindow(ActionEvent event) {
+        WindowHelper.closeWindow(event);
     }
 }

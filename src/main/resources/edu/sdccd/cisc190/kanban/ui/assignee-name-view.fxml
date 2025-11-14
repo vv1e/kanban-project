@@ -16,8 +16,8 @@
         stylesheets="/dialog-style.css"
         styleClass="message-window"
 >
-    <Label styleClass="baseline-message" wrapText="true" text="Please provide a name for the asignee."/>
-    <TextField fx:id="assigneeField" promptText="Name"> </TextField>
+    <Label styleClass="baseline-message" wrapText="true" text="Please provide a name for the assignee."/>
+    <TextField fx:id="assigneeField" promptText="Assignee name"/>
     <HBox alignment="BOTTOM_RIGHT" prefHeight="40.0" prefWidth="30.0" spacing="10">
         <Button defaultButton="true" text="OK" onAction="#changeAssignee" minWidth="70"/>
         <Button cancelButton="true" text="Cancel" onAction="#closeWindow" minWidth="70"/>

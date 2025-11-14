@@ -47,7 +47,7 @@
                 <Label fx:id="issueAssigneeLabel" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     Assignee: None
                 </Label>
-                <Button defaultButton="true" text="Change" onAction="#openAssigneeDialog" />
+                <Button text="Change" onAction="#openAssigneeDialog" />
             </HBox>
             <HBox fx:id="toggleBox" HBox.hgrow="ALWAYS">
                 <ToggleButton fx:id="bugToggle" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>

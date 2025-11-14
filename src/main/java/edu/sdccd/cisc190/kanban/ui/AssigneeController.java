@@ -6,12 +6,11 @@ import javafx.fxml.FXML;
 import edu.sdccd.cisc190.kanban.models.Issue;
 import javafx.scene.control.TextField;
 
+public class AssigneeController {
+    @FXML TextField assigneeField;
+    @FXML private Issue issue;
 
-public class AssigneeController{
-    @FXML
-    TextField assigneeField;
     private Runnable onChangeCallback;
-    private Issue issue;
 
     public void setIssue(Issue issue) {
         this.issue = issue;
@@ -28,7 +27,8 @@ public class AssigneeController{
     private void changeAssignee(ActionEvent event) {
         if (issue != null && !assigneeField.getText().isBlank()) {
             issue.setAssignee(assigneeField.getText());
-        } else{
+        } else {
+            assert issue != null;
             issue.setAssignee("None");
         }
         if (onChangeCallback != null) {

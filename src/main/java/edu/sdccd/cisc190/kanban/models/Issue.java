@@ -74,6 +74,11 @@ public class Issue {
     public void setAssignee(String assignee) {
         this.assignee = assignee;
         dateModified = LocalDateTime.now();
+
+        addComment(
+            "System",
+            String.format("Set assignee to %s.", assignee)
+        );
     }
 
     public ObservableList<Comment> getComments() {

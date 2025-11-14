@@ -67,7 +67,7 @@ public class CategoryBoxController {
                 new onRenameActionSetup()
             );
         } catch (IOException e) {
-            WindowHelper.loadErrorWindow("New Category", (Stage) KanbanApplication.getController().getMenuBar().getScene().getWindow());
+            WindowHelper.loadErrorWindow("Rename Category", (Stage) KanbanApplication.getController().getMenuBar().getScene().getWindow());
         }
     }
 
@@ -127,7 +127,7 @@ public class CategoryBoxController {
                 new onMoveActionSetup()
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            WindowHelper.loadErrorWindow("Category Sort",  (Stage) KanbanApplication.getController().getMenuBar().getScene().getWindow());
         }
     }
 }
