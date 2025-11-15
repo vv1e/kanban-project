@@ -245,6 +245,33 @@ public class IssueController {
     }
 
     @FXML
+    private void openCommentDialog() throws IOException {
+        class commentViewSetup implements WindowSetup {
+            @Override
+            public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
+                CommentController controller = fxmlLoader.getController();
+                controller.setIssue(issue);
+                controller.setOnChangeCallback(IssueController.this::addComment);
+
+                stage.setTitle("Add Comment");
+
+                // Annoying ding fix
+                stage.initOwner(issueBox.getScene().getWindow());
+            }
+        }
+
+        WindowHelper.loadWindow(
+                AssigneeController.class.getResource("comment-view.fxml"),
+                500, 350, false,
+                new commentViewSetup()
+        );
+    }
+
+    private void addComment() {
+        commentList.setItems(issue.getComments());
+    }
+
+    @FXML
     private void closeWindow(ActionEvent event) {
         WindowHelper.closeWindow(event);
     }

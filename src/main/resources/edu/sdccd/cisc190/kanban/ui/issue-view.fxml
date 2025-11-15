@@ -67,7 +67,7 @@
                     <Label styleClass="issue-commentbox-label" maxWidth="Infinity" HBox.hgrow="ALWAYS">
                         COMMENTS
                     </Label>
-                    <Button text="Add Comment" HBox.hgrow="ALWAYS"/>
+                    <Button text="Add Comment" onAction="#openCommentDialog" HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
             <ListView viewOrder="1" fx:id="commentList" styleClass="common-column-list" prefHeight="200" prefWidth="200" VBox.vgrow="ALWAYS" focusTraversable="false"/>

@@ -1,0 +1,42 @@
+* {
+    -fx-font-family: Tahoma, sans-serif;
+    -fx-focus-color: #ff4c4c;
+    -fx-faint-focus-color: transparent;
+}
+
+.button:default {
+    -fx-base: #ff6c6c
+}
+
+.comment-window {
+    -fx-padding: 20;
+}
+
+.baseline-message {
+    -fx-padding: 0 0 10 0;
+    -fx-font-size: 25;
+}
+
+.list-view:disabled {
+    -fx-opacity: 1;
+}
+
+.comment-title {
+    -fx-font-size: 15;
+    -fx-text-align: left
+}
+
+.author-label {
+    -fx-font-size: 15;
+    -fx-text-align: left;
+}
+
+.comment-decription {
+    -fx-font-size: 15;
+    -fx-text-align: left;
+}
+
+TextField {
+    -fx-padding: 5px;
+    -fx-background-insets: 5px;
+}
