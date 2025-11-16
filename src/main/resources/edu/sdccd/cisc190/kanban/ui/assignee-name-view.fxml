@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox
-        alignment="CENTER"
-        maxHeight="150.0"
-        maxWidth="300.0"
-        xmlns="http://javafx.com/javafx/21"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="edu.sdccd.cisc190.kanban.ui.AssigneeController"
-        stylesheets="/dialog-style.css"
-        styleClass="message-window"
+    alignment="CENTER"
+    maxHeight="150.0"
+    maxWidth="300.0"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="edu.sdccd.cisc190.kanban.ui.AssigneeController"
+    stylesheets="/dialog-style.css"
+    styleClass="message-window"
 >
     <Label styleClass="baseline-message" wrapText="true" text="Please provide a name for the assignee."/>
     <TextField fx:id="assigneeField" promptText="Assignee name"/>

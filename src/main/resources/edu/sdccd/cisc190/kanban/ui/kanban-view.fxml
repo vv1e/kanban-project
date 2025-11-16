@@ -10,6 +10,8 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
@@ -31,6 +33,23 @@
                 <MenuItem fx:id="menuFileSaveAs" text="Save As..." disable="true"/>
                 <SeparatorMenuItem/>
                 <MenuItem fx:id="menuFileClose" text="Close Kanban Board" disable="true" onAction="#menuCloseBoard"/>
+            </Menu>
+            <Menu text="View">
+                <Menu text="Sort Issues By">
+                    <fx:define>
+                        <ToggleGroup fx:id="menuSortFieldToggleGroup"/>
+                        <ToggleGroup fx:id="menuSortDirectionToggleGroup"/>
+                    </fx:define>
+
+                    <!--suppress JavaFxUnresolvedFxIdReference -->
+                    <RadioMenuItem fx:id="menuSortFieldNone" toggleGroup="$menuSortFieldToggleGroup" userData="NONE" text="None" selected="true"/>
+                    <SeparatorMenuItem/>
+                    <RadioMenuItem toggleGroup="$menuSortFieldToggleGroup" userData="DATE_CREATED" text="Date Created"/>
+                    <RadioMenuItem toggleGroup="$menuSortFieldToggleGroup" userData="DATE_MODIFIED" text="Date Modified"/>
+                    <SeparatorMenuItem/>
+                    <RadioMenuItem toggleGroup="$menuSortDirectionToggleGroup" userData="ASCENDING" text="Ascending" disable="${menuSortFieldNone.selected}" selected="true"/>
+                    <RadioMenuItem toggleGroup="$menuSortDirectionToggleGroup" userData="DESCENDING" text="Descending" disable="${menuSortFieldNone.selected}"/>
+                </Menu>
             </Menu>
             <Menu text="Help">
                 <MenuItem text="About Kanban" onAction="#openAboutWindow"/>

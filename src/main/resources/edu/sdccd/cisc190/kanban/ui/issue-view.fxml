@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ToggleGroup?>
 <VBox
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
@@ -43,6 +44,10 @@
                     <TextField fx:id="issueAuthorField" promptText="Author" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                 </HBox>
             </VBox>
+            <VBox spacing="10" styleClass="issue-date-container">
+                <Label fx:id="issueDateCreatedLabel">Created on: N/A</Label>
+                <Label fx:id="issueDateModifiedLabel">Last modified on: N/A</Label>
+            </VBox>
             <HBox fx:id="issueAssigneeBox" spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
                 <Label fx:id="issueAssigneeLabel" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     Assignee: None
@@ -50,9 +55,13 @@
                 <Button text="Change" onAction="#openAssigneeDialog" />
             </HBox>
             <HBox fx:id="toggleBox" HBox.hgrow="ALWAYS">
-                <ToggleButton fx:id="bugToggle" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
-                <ToggleButton fx:id="featureToggle" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
-                <ToggleButton fx:id="taskToggle" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
+                <fx:define>
+                    <ToggleGroup fx:id="typeToggleGroup"/>
+                </fx:define>
+
+                <ToggleButton toggleGroup="$typeToggleGroup" userData="BUG_REPORT" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
+                <ToggleButton toggleGroup="$typeToggleGroup" userData="FEATURE_REQUEST" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
+                <ToggleButton toggleGroup="$typeToggleGroup" userData="TASK" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
             </HBox>
             <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" spacing="5">
                 <Label fx:id="issueDescriptionLabel" styleClass="issue-creation-label">

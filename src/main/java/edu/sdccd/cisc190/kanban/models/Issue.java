@@ -1,12 +1,16 @@
 package edu.sdccd.cisc190.kanban.models;
 
+import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.util.DateFormatHelper;
+import edu.sdccd.cisc190.kanban.util.interfaces.Sortable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.time.LocalDateTime;
 
-public class Issue {
+public class Issue implements Sortable {
     private final int id;
     private final String name;
     private final String description;
@@ -16,7 +20,7 @@ public class Issue {
     private String assignee;
 
     private final LocalDateTime dateCreated;
-    private LocalDateTime dateModified;
+    private final ObjectProperty<LocalDateTime> dateModified = new SimpleObjectProperty<>();
 
     private final ObservableList<Comment> comments;
 
@@ -37,7 +41,7 @@ public class Issue {
         this.id = id;
 
         this.dateCreated = LocalDateTime.now();
-        this.dateModified = LocalDateTime.now();
+        this.dateModified.set(this.dateCreated);
 
         this.comments = FXCollections.observableArrayList();
         this.addComment("System", "Issue created.");
@@ -73,7 +77,7 @@ public class Issue {
 
     public void setAssignee(String assignee) {
         this.assignee = assignee;
-        dateModified = LocalDateTime.now();
+        dateModified.set(LocalDateTime.now());
 
         addComment(
             "System",
@@ -87,14 +91,26 @@ public class Issue {
 
     public void addComment(String author, String comment) {
         this.comments.add(new Comment(author, comment));
-        dateModified = LocalDateTime.now();
+        dateModified.set(LocalDateTime.now());
     }
 
-    public String getDateCreated() {
+    public long getDateCreatedNano() {
+        return dateCreated.getNano();
+    }
+
+    public String getDateCreatedString() {
         return DateFormatHelper.formatDate(dateCreated);
     }
 
-    public String getDateModified() {
-        return DateFormatHelper.formatDate(dateModified);
+    public long getDateModifiedNano() {
+        return dateModified.get().getNano();
+    }
+
+    public String getDateModifiedString() {
+        return DateFormatHelper.formatDate(dateModified.get());
+    }
+
+    public ObjectProperty<LocalDateTime> dateModifiedProperty() {
+        return dateModified;
     }
 }

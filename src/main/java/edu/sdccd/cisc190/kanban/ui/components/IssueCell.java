@@ -2,7 +2,7 @@ package edu.sdccd.cisc190.kanban.ui.components;
 
 import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.models.Board;
-import edu.sdccd.cisc190.kanban.models.IssueType;
+import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.ui.KanbanController;
 import edu.sdccd.cisc190.kanban.models.Issue;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
@@ -73,9 +73,9 @@ public class IssueCell extends ListCell<Issue> {
 
             // Checks if the string is too long and adds ellipses if it is.
             if (issue.getDescription().length() > 100) {
-                descriptionLabel.setText(issue.getDescription().substring(0, 97) + "...");
+                descriptionLabel.setText(issue.getDescription().replaceAll("\n", " ").substring(0, 97) + "...");
             } else {
-                descriptionLabel.setText(issue.getDescription());
+                descriptionLabel.setText(issue.getDescription().replaceAll("\n", " "));
             }
         }
     }

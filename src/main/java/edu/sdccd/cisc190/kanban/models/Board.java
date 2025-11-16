@@ -1,6 +1,7 @@
 package edu.sdccd.cisc190.kanban.models;
 
 import edu.sdccd.cisc190.kanban.Launcher;
+import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
