@@ -2,7 +2,7 @@ package edu.sdccd.cisc190.kanban.ui;
 
 import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.models.Board;
-import edu.sdccd.cisc190.kanban.models.IssueType;
+import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.ui.components.CommentCell;
 import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
@@ -11,6 +11,7 @@ import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,13 +35,14 @@ public class IssueController {
     @FXML private HBox createButtonBox;
     @FXML private HBox issueAssigneeBox;
 
-    @FXML private ToggleButton bugToggle;
-    @FXML private ToggleButton featureToggle;
-    @FXML private ToggleButton taskToggle;
+    @FXML private ToggleGroup typeToggleGroup;
 
     @FXML private TextField issueTitleField;
     @FXML private TextField issueAuthorField;
     @FXML private TextArea issueDescriptionArea;
+
+    @FXML private Label issueDateCreatedLabel;
+    @FXML private Label issueDateModifiedLabel;
 
     @FXML private ComboBox<String> issueCategoryComboBox;
 
@@ -57,9 +59,6 @@ public class IssueController {
 
     @FXML
     protected void initialize() {
-        ToggleGroup group = new ToggleGroup();
-        group.getToggles().addAll(bugToggle, featureToggle, taskToggle);
-
         try {
             commentList.setCellFactory(comment -> {
                 try {
@@ -90,6 +89,8 @@ public class IssueController {
             ObjectHelper.removeNodes(
                 propertiesBox,
                 commentsBox,
+                issueDateCreatedLabel,
+                issueDateModifiedLabel,
                 issueAuthorByLabel,
                 issueAssigneeBox,
                 issueCategoryComboBox
@@ -124,6 +125,15 @@ public class IssueController {
 
         issueTitleField.setText(issue.getName());
         issueAuthorField.setText(issue.getCreator());
+        issueDateCreatedLabel.setText(
+            String.format("Created: %s", issue.getDateCreatedString())
+        );
+        issueDateModifiedLabel.textProperty().bind(
+            Bindings.createStringBinding(
+                () -> String.format("Modified: %s", issue.getDateModifiedString()),
+                issue.dateModifiedProperty()
+            )
+        );
         issueDescriptionArea.setText(issue.getDescription());
         tagLabel.setText(issue.getType().getLetter());
         tagLabel.getStyleClass().add(issue.getType().getTagStyle());
@@ -158,14 +168,10 @@ public class IssueController {
             issueProblems[problemNumber++] = " - The issue description cannot be empty.";
         }
 
-        if (bugToggle.isSelected()) {
-            type = IssueType.BUG_REPORT;
-        } else if (featureToggle.isSelected()) {
-            type = IssueType.FEATURE_REQUEST;
-        } else if (taskToggle.isSelected()) {
-            type = IssueType.TASK;
-        } else {
+        if (typeToggleGroup.getSelectedToggle() == null) {
             issueProblems[problemNumber++] = " - The issue type must be specified.";
+        } else {
+            type = IssueType.valueOf((String) typeToggleGroup.getSelectedToggle().getUserData());
         }
 
         if (issueAuthorField.getText().trim().isEmpty()) {

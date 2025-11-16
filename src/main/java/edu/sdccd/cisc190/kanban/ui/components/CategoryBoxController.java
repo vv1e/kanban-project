@@ -4,6 +4,7 @@ import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.models.Board;
 import edu.sdccd.cisc190.kanban.models.Category;
 import edu.sdccd.cisc190.kanban.models.Issue;
+import edu.sdccd.cisc190.kanban.enums.SortingType;
 import edu.sdccd.cisc190.kanban.ui.CategoryNameSetController;
 import edu.sdccd.cisc190.kanban.ui.CategorySortController;
 import edu.sdccd.cisc190.kanban.ui.KanbanController;
@@ -11,6 +12,10 @@ import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -41,11 +46,18 @@ public class CategoryBoxController {
         }));
     }
 
-    public void setCategory(Category category) {
+    public void setCategoryAndSortingProperty(Category category, ObjectProperty<SortingType> sortingType) {
         this.category = category;
+        categoryLabel.textProperty().bind(category.nameProperty());
 
-        categoryLabel.textProperty().bind(category.getNameProperty());
-        categoryListView.setItems(category.getIssues());
+        final ObservableList<Issue> issues = category.getIssues();
+
+        categoryListView.itemsProperty().bind(
+            Bindings.createObjectBinding(
+                () -> new SortedList<>(issues, sortingType.get().getComparator()),
+                sortingType
+            )
+        );
     }
 
     @FXML
@@ -63,7 +75,7 @@ public class CategoryBoxController {
         try {
             WindowHelper.loadWindow(
                 CategoryNameSetController.class.getResource("category-name-change-view.fxml"),
-                300, 165, false,
+                300, 150, false,
                 new onRenameActionSetup()
             );
         } catch (IOException e) {
@@ -81,7 +93,7 @@ public class CategoryBoxController {
             "Confirm Category Deletion",
             """
                 Are you sure you want to delete this category?
-                WARNING: This action is IRREVERSIBLE!
+                WARNING: This action cannot be undone!
                 """,
             stage
         );

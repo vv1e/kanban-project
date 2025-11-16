@@ -1,5 +1,6 @@
 package edu.sdccd.cisc190.kanban.models;
 
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -11,7 +12,7 @@ public class Category {
 
     Category(String name) {
         this.name = new SimpleStringProperty(name);
-        issues = FXCollections.observableArrayList();
+        issues = FXCollections.observableArrayList(issue -> new Observable[]{ issue.dateModifiedProperty() });
     }
 
     void addIssue(Issue issue) {
@@ -33,7 +34,7 @@ public class Category {
         }
     }
 
-    public StringProperty getNameProperty() {
+    public StringProperty nameProperty() {
         return name;
     }
 

@@ -1,6 +1,9 @@
 package edu.sdccd.cisc190.kanban.ui;
 
+import edu.sdccd.cisc190.kanban.enums.SortDirection;
+import edu.sdccd.cisc190.kanban.enums.SortField;
 import edu.sdccd.cisc190.kanban.models.Category;
+import edu.sdccd.cisc190.kanban.enums.SortingType;
 import edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController;
 import edu.sdccd.cisc190.kanban.models.Board;
 import edu.sdccd.cisc190.kanban.models.Issue;
@@ -8,7 +11,10 @@ import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,6 +29,7 @@ import java.util.ArrayList;
 public class KanbanController {
     private Board board;
     private final BooleanProperty isBoardLoaded = new SimpleBooleanProperty(false);
+    private final ObjectProperty<SortingType> sortingType = new SimpleObjectProperty<>(SortingType.NONE);
 
     @FXML private MenuBar menuBar;
     @FXML private Label welcomeLabel;
@@ -34,6 +41,9 @@ public class KanbanController {
     @FXML private MenuItem menuFileSave;
     @FXML private MenuItem menuFileSaveAs;
     @FXML private MenuItem menuFileClose;
+
+    @FXML private ToggleGroup menuSortFieldToggleGroup;
+    @FXML private ToggleGroup menuSortDirectionToggleGroup;
 
     @FXML
     protected void initialize() {
@@ -58,6 +68,16 @@ public class KanbanController {
 
         kanbanColumns.visibleProperty().bind(isBoardLoaded);
         kanbanColumns.managedProperty().bind(isBoardLoaded);
+
+        menuSortFieldToggleGroup.selectedToggleProperty().addListener(this::onMenuSortModified);
+        menuSortDirectionToggleGroup.selectedToggleProperty().addListener(this::onMenuSortModified);
+    }
+
+    private void onMenuSortModified(ObservableValue<? extends Toggle> ignoredObservable, Toggle ignoredOldValue, Toggle ignoredNewValue) {
+        final SortField field = SortField.valueOf((String) menuSortFieldToggleGroup.getSelectedToggle().getUserData());
+        final SortDirection direction = SortDirection.valueOf((String) menuSortDirectionToggleGroup.getSelectedToggle().getUserData());
+
+        sortingType.set(SortingType.from(field, direction));
     }
 
     @FXML
@@ -78,7 +98,7 @@ public class KanbanController {
         try {
             WindowHelper.loadWindow(
                 CategoryNameSetController.class.getResource("category-name-change-view.fxml"),
-                300, 165, false,
+                300, 150, false,
                 "New Category"
             );
         } catch (IOException e) {
@@ -155,6 +175,9 @@ public class KanbanController {
                 for (Category category : categories) {
                     createCategoryBox(category);
                 }
+
+                // Redirect focus away from any buttons by default
+                welcomeLabel.requestFocus();
             } catch (IOException | RuntimeIOException e) {
                 setBoardToDefault(stage);
 
@@ -177,7 +200,8 @@ public class KanbanController {
         FXMLLoader fxmlLoader = new FXMLLoader(KanbanController.class.getResource("components/category-box.fxml"));
         VBox categoryBox = fxmlLoader.load();
         CategoryBoxController controller =  fxmlLoader.getController();
-        controller.setCategory(category);
+
+        controller.setCategoryAndSortingProperty(category, sortingType);
 
         kanbanColumns.getChildren().add(categoryBox);
     }
