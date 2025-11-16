@@ -86,7 +86,7 @@
         </VBox>
     </HBox>
     <HBox styleClass="issue-create-box" fx:id="createButtonBox" alignment="BOTTOM_RIGHT" spacing="5" VBox.vgrow="NEVER">
-        <Button focusTraversable="${createButtonBox.managed}" defaultButton="true" minWidth="70" text="OK" onAction="#createIssue"/>
+        <Button fx:id="createOKButton" defaultButton="true" minWidth="70" text="OK" onAction="#createIssue"/>
         <Button focusTraversable="${createButtonBox.managed}" cancelButton="true" minWidth="70" text="Cancel" onAction="#closeWindow"/>
     </HBox>
 </VBox>

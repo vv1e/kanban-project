@@ -35,6 +35,8 @@ public class IssueController {
     @FXML private HBox createButtonBox;
     @FXML private HBox issueAssigneeBox;
 
+    @FXML private Button createOKButton;
+
     @FXML private ToggleGroup typeToggleGroup;
 
     @FXML private TextField issueTitleField;
@@ -103,7 +105,8 @@ public class IssueController {
                 toggleBox,
                 issueTitleLabel,
                 issueAuthorLabel,
-                issueDescriptionLabel
+                issueDescriptionLabel,
+                createOKButton
             );
             ObjectHelper.setControlToReadonly(
                 issueTitleField,
