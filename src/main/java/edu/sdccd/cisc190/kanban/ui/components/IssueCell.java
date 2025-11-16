@@ -10,9 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -36,9 +34,10 @@ public class IssueCell extends ListCell<Issue> {
         rootView = loader.load();
         rootView.prefWidthProperty().bind(widthProperty().subtract(20));
 
+        setContextMenu(contextMenu);
+
         setOnMouseClicked(this::onAction);
         setOnContextMenuRequested(this::contextMenuRequested);
-
         contextMenuOpen.setOnAction(this::contextMenuOpenAction);
     }
 
@@ -100,7 +99,6 @@ public class IssueCell extends ListCell<Issue> {
             return;
         }
 
-        contextMenu.show(this, event.getScreenX(), event.getScreenY());
         contextMenuMove.getItems().clear();
 
         final Board board = KanbanApplication.getController().getBoard();

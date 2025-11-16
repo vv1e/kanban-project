@@ -12,6 +12,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -19,53 +20,79 @@ import java.net.URL;
 import java.util.Objects;
 
 public class WindowHelper {
-    final static MenuBar menuBar = KanbanApplication.getController().getMenuBar();
-
+    /**
+     * Loads a window using FXML. Use this only your controller is inside a window that is not the
+     * main window.
+     * @param filePath Path to the FXML file.
+     * @param width Window width.
+     * @param height Window height.
+     * @param resizable Set whether the window can be resized (dialogs typically should not be)
+     * @param title Window title.
+     * @param initWindow The parent Window.
+     * @param windowSetup Any additional setup (e.g. setting an issue inside IssueController)
+     * @throws IOException Exception thrown when FXML file cannot be loaded.
+     */
     public static void loadWindow(
         URL filePath,
         int width,
         int height,
         boolean resizable,
-        String title
-    ) throws IOException {
-        class loadWindowGenericSetup implements WindowSetup {
-            @Override
-            public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
-                stage.setTitle(title);
-            }
-        }
-
-        loadWindow(filePath, width, height, resizable, new loadWindowGenericSetup());
-    }
-
-    public static void loadWindow(
-        URL filePath,
-        int width,
-        int height,
-        boolean resizable,
+        String title,
+        Window initWindow,
         WindowSetup windowSetup
     ) throws IOException {
-        Stage currentStage = (Stage) menuBar.getScene().getWindow();
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(initWindow);
+        stage.setWidth(width);
+        stage.setHeight(height);
+        stage.setResizable(resizable);
+        stage.setTitle(title);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(filePath);
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setScene(scene);
+
+        if (windowSetup != null) windowSetup.setup(fxmlLoader, stage, scene);
+
+        stage.showAndWait();
+    }
+
+    /**
+     * Loads a window using FXML. Use this only if the controller is inside the main window.
+     * @param filePath Path to the FXML file.
+     * @param width Window width.
+     * @param height Window height.
+     * @param resizable Set whether the window can be resized (dialogs typically should not be)
+     * @param title Window title.
+     * @param windowSetup Any additional setup (e.g. setting an issue inside IssueController)
+     * @throws IOException Exception thrown when FXML file cannot be loaded.
+     */
+    public static void loadWindowDisableMenuBar(
+        URL filePath,
+        int width,
+        int height,
+        boolean resizable,
+        String title,
+        WindowSetup windowSetup
+    ) throws IOException {
+        final MenuBar menuBar = KanbanApplication.getController().getMenuBar();
 
         menuBar.setDisable(true);
         for (Menu menu : menuBar.getMenus()) {
             menu.setDisable(true);
         }
 
-        Stage stage = new Stage();
-        stage.initOwner(currentStage);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setWidth(width);
-        stage.setHeight(height);
-        stage.setResizable(resizable);
+        try {
+            loadWindow(filePath, width, height, resizable, title, menuBar.getScene().getWindow(), windowSetup);
+        } catch (IOException e) {
+            menuBar.setDisable(false);
+            for (Menu menu : menuBar.getMenus()) {
+                menu.setDisable(false);
+            }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(filePath);
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setScene(scene);
-
-        windowSetup.setup(fxmlLoader, stage, scene);
-
-        stage.showAndWait();
+            throw new IOException(e);
+        }
 
         menuBar.setDisable(false);
         for (Menu menu : menuBar.getMenus()) {
@@ -113,6 +140,10 @@ public class WindowHelper {
         return alert;
     }
 
+    /**
+     * Close caller's Window.
+     * @param event Supplied event (e.g. ActionEvent)
+     */
     public static void closeWindow(Event event) {
         final Node source = (Node) event.getSource();
         final Stage stage = (Stage) source.getScene().getWindow();

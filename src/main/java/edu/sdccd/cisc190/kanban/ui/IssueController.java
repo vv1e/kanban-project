@@ -27,11 +27,11 @@ import java.util.List;
 
 public class IssueController {
     protected Issue issue;
-    @FXML private VBox issueBox;
+    @FXML private VBox rootBox;
 
     @FXML private HBox propertiesBox;
     @FXML private VBox commentsBox;
-    @FXML private HBox toggleBox;
+    @FXML private VBox toggleBox;
     @FXML private HBox createButtonBox;
     @FXML private HBox issueAssigneeBox;
 
@@ -75,7 +75,7 @@ public class IssueController {
                     There was an error while opening the issue window.
                     Please try again later or report the bug to us over Discord.
                     """,
-                (Stage) issueBox.getScene().getWindow()
+                (Stage) rootBox.getScene().getWindow()
             );
         }
     }
@@ -95,13 +95,12 @@ public class IssueController {
                 issueAssigneeBox,
                 issueCategoryComboBox
             );
-            issueBox.getStyleClass().clear();
+            rootBox.getStyleClass().clear();
             issueTitleField.getStyleClass().remove("issue-title");
         } else {
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
             ObjectHelper.removeNodes(
                 toggleBox,
-                createButtonBox,
                 issueTitleLabel,
                 issueAuthorLabel,
                 issueDescriptionLabel
@@ -111,6 +110,13 @@ public class IssueController {
                 issueDescriptionArea,
                 issueAuthorField
             );
+
+            // This effectively disables the "OK" and "Cancel" buttons, but still makes it possible to
+            // Close the "View Issue" window with the Escape key.
+            createButtonBox.setOpacity(0.0);
+            createButtonBox.setManaged(false);
+
+            rootBox.requestFocus();
         }
     }
 
@@ -203,7 +209,7 @@ public class IssueController {
                     %s
                     """, problemString
                 ),
-                (Stage) issueBox.getScene().getWindow()
+                (Stage) rootBox.getScene().getWindow()
             );
         }
     }
@@ -216,17 +222,14 @@ public class IssueController {
                 AssigneeController controller = fxmlLoader.getController();
                 controller.setIssue(issue);
                 controller.setOnChangeCallback(IssueController.this::updateAssigneeLabel);
-
-                stage.setTitle("Change Assignee");
-
-                // Annoying ding fix
-                stage.initOwner(issueBox.getScene().getWindow());
             }
         }
 
         WindowHelper.loadWindow(
             AssigneeController.class.getResource("assignee-name-view.fxml"),
             300, 150, false,
+            "Change Assignee",
+            rootBox.getScene().getWindow(),
             new assigneeNameViewSetup()
         );
     }
@@ -258,17 +261,14 @@ public class IssueController {
                 CommentController controller = fxmlLoader.getController();
                 controller.setIssue(issue);
                 controller.setOnChangeCallback(IssueController.this::addComment);
-
-                stage.setTitle("Add Comment");
-
-                // Annoying ding fix
-                stage.initOwner(issueBox.getScene().getWindow());
             }
         }
 
         WindowHelper.loadWindow(
                 AssigneeController.class.getResource("comment-view.fxml"),
-                500, 350, false,
+                300, 300, true,
+                "Add Comment",
+                rootBox.getScene().getWindow(),
                 new commentViewSetup()
         );
     }

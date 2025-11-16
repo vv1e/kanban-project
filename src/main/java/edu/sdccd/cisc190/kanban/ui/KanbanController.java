@@ -19,10 +19,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -47,8 +51,10 @@ public class KanbanController {
 
     @FXML
     protected void initialize() {
-        // macOS: This makes the menu bar use the system one instead of the JavaFX one.
-        menuBar.setUseSystemMenuBar(System.getProperty("os.name").toLowerCase().contains("mac"));
+         // macOS: This makes the menu bar use the system one instead of the JavaFX one.
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.APP_MENU_BAR)) {
+            menuBar.setUseSystemMenuBar(true);
+        }
 
         // Several categories are supposed to be inaccessible when there is no board loaded.
         MenuItem[] boardDependentMenus = new MenuItem[]{
@@ -83,10 +89,11 @@ public class KanbanController {
     @FXML
     private void menuNewBoard() {
         try {
-            WindowHelper.loadWindow(
+            WindowHelper.loadWindowDisableMenuBar(
                 BoardCreationController.class.getResource("board-creation-view.fxml"),
                 300, 165, false,
-                "New Board"
+                "New Board",
+                null
             );
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("New Board", (Stage) menuBar.getScene().getWindow());
@@ -96,10 +103,11 @@ public class KanbanController {
     @FXML
     private void menuNewCategory() {
         try {
-            WindowHelper.loadWindow(
+            WindowHelper.loadWindowDisableMenuBar(
                 CategoryNameSetController.class.getResource("category-name-change-view.fxml"),
                 300, 150, false,
-                "New Category"
+                "New Category",
+                null
             );
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("New Category", (Stage) menuBar.getScene().getWindow());
@@ -111,17 +119,16 @@ public class KanbanController {
         class newIssueSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
-                stage.setTitle("New Issue");
-
                 IssueController controller = fxmlLoader.getController();
                 controller.setIsIssueBeingCreated(true);
             }
         }
 
         try {
-            WindowHelper.loadWindow(
+            WindowHelper.loadWindowDisableMenuBar(
                 IssueController.class.getResource("issue-view.fxml"),
                 400, 400, true,
+                "New Issue",
                 new newIssueSetup()
             );
         } catch (IOException e) {
@@ -135,12 +142,13 @@ public class KanbanController {
     }
 
     @FXML
-    private void openAboutWindow() {
+    void openAboutWindow() {
         try {
-            WindowHelper.loadWindow(
+            WindowHelper.loadWindowDisableMenuBar(
                 KanbanController.class.getResource("about-view.fxml"),
                 325, 175, false,
-                "About Kanban"
+                "About Kanban",
+                null
             );
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("About", (Stage) menuBar.getScene().getWindow());
@@ -220,9 +228,6 @@ public class KanbanController {
         class openIssueWindowSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
-                stage.setTitle(String.format("Issue: %s", issue.getName()));
-                scene.getRoot().requestFocus();
-
                 IssueController controller = fxmlLoader.getController();
                 controller.setIsIssueBeingCreated(false);
                 controller.setIssue(issue);
@@ -230,9 +235,10 @@ public class KanbanController {
         }
 
         try {
-            WindowHelper.loadWindow(
+            WindowHelper.loadWindowDisableMenuBar(
                 IssueController.class.getResource("issue-view.fxml"),
                 700, 400, true,
+                String.format("Issue: %s", issue.getName()),
                 new openIssueWindowSetup()
             );
         } catch (IOException e) {

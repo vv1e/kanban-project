@@ -21,20 +21,20 @@
         <MenuBar
             fx:id="menuBar"
         >
-            <Menu text="File">
-                <Menu text="New...">
-                    <MenuItem text="Kanban Board" onAction="#menuNewBoard"/>
-                    <MenuItem fx:id="menuFileNewCategory" text="Category" disable="true" onAction="#menuNewCategory"/>
-                    <MenuItem fx:id="menuFileNewIssue" text="Issue" disable="true" onAction="#menuNewIssue"/>
+            <Menu text="_File">
+                <Menu text="_New...">
+                    <MenuItem text="Kanban _Board" onAction="#menuNewBoard" accelerator="SHORTCUT+T"/>
+                    <MenuItem fx:id="menuFileNewCategory" text="_Category" disable="true" onAction="#menuNewCategory"/>
+                    <MenuItem fx:id="menuFileNewIssue" text="_Issue" disable="true" onAction="#menuNewIssue" accelerator="SHORTCUT+N"/>
                 </Menu>
-                <MenuItem text="Open..."/>
+                <MenuItem text="_Open..." accelerator="SHORTCUT+O"/>
                 <SeparatorMenuItem/>
-                <MenuItem fx:id="menuFileSave" text="Save" disable="true"/>
-                <MenuItem fx:id="menuFileSaveAs" text="Save As..." disable="true"/>
+                <MenuItem fx:id="menuFileSave" text="_Save" disable="true" accelerator="SHORTCUT+S"/>
+                <MenuItem fx:id="menuFileSaveAs" text="Save _As..." disable="true" accelerator="SHORTCUT+SHIFT+S"/>
                 <SeparatorMenuItem/>
-                <MenuItem fx:id="menuFileClose" text="Close Kanban Board" disable="true" onAction="#menuCloseBoard"/>
+                <MenuItem fx:id="menuFileClose" text="_Close Kanban Board" disable="true" onAction="#menuCloseBoard" accelerator="SHORTCUT+SHIFT+T"/>
             </Menu>
-            <Menu text="View">
+            <Menu text="_View">
                 <Menu text="Sort Issues By">
                     <fx:define>
                         <ToggleGroup fx:id="menuSortFieldToggleGroup"/>
@@ -51,8 +51,8 @@
                     <RadioMenuItem toggleGroup="$menuSortDirectionToggleGroup" userData="DESCENDING" text="Descending" disable="${menuSortFieldNone.selected}"/>
                 </Menu>
             </Menu>
-            <Menu text="Help">
-                <MenuItem text="About Kanban" onAction="#openAboutWindow"/>
+            <Menu text="_Help">
+                <MenuItem text="_About Kanban" onAction="#openAboutWindow"/>
             </Menu>
         </MenuBar>
     </top>

@@ -22,7 +22,6 @@
     -fx-padding: 2px;
 }
 
-
 .bug-tag {
     -fx-background-color: #ff4c4c;
 }
@@ -50,6 +49,11 @@
     -fx-padding: 4;
 }
 
+.common-field-label {
+    -fx-font-size: 10;
+    -fx-font-weight: bold;
+}
+
 .common-issue {
     -fx-base: #e1cb91;
     -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #ecd69d, #eccf86);
@@ -60,9 +64,16 @@
 .common-column-list {
     -fx-background-color: radial-gradient(focus-distance 0% , center 90% 25%, radius 50%, #fcfcf9, #f4f4f0);
     -fx-background-radius: 0 0 5 5;
+    -fx-border-radius: 0 0 5 5;
     -fx-scale-x: 1;
     -fx-border-color: transparent;
+    -fx-border-width: 2px;
     -fx-background-insets: 0, 0, 0;
+}
+
+/*noinspection CssInvalidPseudoSelector*/
+.common-column-list:focus-visible {
+    -fx-border-color: #ff6c6c
 }
 
 .common-column {

@@ -1,5 +1,5 @@
-* {
-    -fx-font-family: Tahoma, sans-serif;
+.about-root {
+    -fx-padding: 10;
 }
 
 .app-name {
@@ -9,7 +9,8 @@
 }
 
 .app-version {
-
+    -fx-font-size: 10;
+    -fx-font-weight: 800;
 }
 
 .app-misc {
