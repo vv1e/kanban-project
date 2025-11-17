@@ -94,7 +94,7 @@ public class IssueCell extends ListCell<Issue> {
         controller.openIssue(getItem());
     }
 
-    private void contextMenuRequested(ContextMenuEvent event) {
+    private void contextMenuRequested(ContextMenuEvent ignored) {
         if (itemProperty().get() == null) {
             return;
         }
