@@ -6,7 +6,7 @@
 
     <groupId>edu.sdccd.cisc190</groupId>
     <artifactId>kanban</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>cisc190-kanban</name>
 
     <properties>
