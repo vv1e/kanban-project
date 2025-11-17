@@ -9,14 +9,13 @@
     HBox.hgrow="SOMETIMES"
     minWidth="150"
     styleClass="common-issue"
-    focusTraversable="true"
 >
     <fx:define>
         <ContextMenu fx:id="contextMenu">
             <items>
-                <MenuItem fx:id="contextMenuOpen" text="Open"/>
+                <MenuItem fx:id="contextMenuOpen" text="_Open"/>
                 <SeparatorMenuItem/>
-                <Menu fx:id="contextMenuMove" text="Move"/>
+                <Menu fx:id="contextMenuMove" text="_Move"/>
             </items>
         </ContextMenu>
     </fx:define>

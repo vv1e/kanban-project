@@ -19,7 +19,7 @@
     styleClass="issue-rootview"
 >
     <HBox VBox.vgrow="ALWAYS" spacing="10">
-        <VBox fx:id="issueBox" spacing="5" styleClass="common-issue" HBox.hgrow="SOMETIMES">
+        <VBox fx:id="rootBox" spacing="5" styleClass="common-issue" HBox.hgrow="SOMETIMES">
             <HBox HBox.hgrow="SOMETIMES">
                 <VBox HBox.hgrow="SOMETIMES" spacing="5">
                     <HBox fx:id="propertiesBox">
@@ -27,7 +27,7 @@
                         <Label fx:id="idLabel" styleClass="id-tag" prefHeight="18">#123456</Label>
                     </HBox>
                     <VBox HBox.hgrow="ALWAYS" spacing="5">
-                        <Label fx:id="issueTitleLabel" styleClass="issue-creation-label">
+                        <Label fx:id="issueTitleLabel" styleClass="common-field-label">
                             TITLE:
                         </Label>
                         <TextField fx:id="issueTitleField" styleClass="issue-title" promptText="Title" HBox.hgrow="SOMETIMES" maxWidth="Infinity"/>
@@ -36,7 +36,7 @@
                 <ComboBox fx:id="issueCategoryComboBox" onAction="#onComboBoxChangeCategory"/>
             </HBox>
             <VBox HBox.hgrow="ALWAYS" spacing="5">
-                <Label fx:id="issueAuthorLabel" styleClass="issue-creation-label">AUTHOR:</Label>
+                <Label fx:id="issueAuthorLabel" styleClass="common-field-label">AUTHOR:</Label>
                 <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
                     <Label fx:id="issueAuthorByLabel">
                         By:&#160;
@@ -54,17 +54,20 @@
                 </Label>
                 <Button text="Change" onAction="#openAssigneeDialog" />
             </HBox>
-            <HBox fx:id="toggleBox" HBox.hgrow="ALWAYS">
+            <VBox fx:id="toggleBox" HBox.hgrow="ALWAYS" spacing="5">
                 <fx:define>
                     <ToggleGroup fx:id="typeToggleGroup"/>
                 </fx:define>
 
-                <ToggleButton toggleGroup="$typeToggleGroup" userData="BUG_REPORT" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
-                <ToggleButton toggleGroup="$typeToggleGroup" userData="FEATURE_REQUEST" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
-                <ToggleButton toggleGroup="$typeToggleGroup" userData="TASK" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
-            </HBox>
+                <Label styleClass="common-field-label">ISSUE TYPE:</Label>
+                <HBox>
+                    <ToggleButton toggleGroup="$typeToggleGroup" userData="BUG_REPORT" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
+                    <ToggleButton toggleGroup="$typeToggleGroup" userData="FEATURE_REQUEST" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
+                    <ToggleButton toggleGroup="$typeToggleGroup" userData="TASK" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
+                </HBox>
+            </VBox>
             <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" spacing="5">
-                <Label fx:id="issueDescriptionLabel" styleClass="issue-creation-label">
+                <Label fx:id="issueDescriptionLabel" styleClass="common-field-label">
                     DESCRIPTION:
                 </Label>
                 <TextArea fx:id="issueDescriptionArea" prefWidth="200" promptText="Description" VBox.vgrow="ALWAYS" wrapText="true"/>
@@ -83,7 +86,7 @@
         </VBox>
     </HBox>
     <HBox styleClass="issue-create-box" fx:id="createButtonBox" alignment="BOTTOM_RIGHT" spacing="5" VBox.vgrow="NEVER">
-        <Button defaultButton="true" minWidth="70" text="OK" onAction="#createIssue"/>
-        <Button cancelButton="true" minWidth="70" text="Cancel" onAction="#closeWindow"/>
+        <Button fx:id="createOKButton" defaultButton="true" minWidth="70" text="OK" onAction="#createIssue"/>
+        <Button focusTraversable="${createButtonBox.managed}" cancelButton="true" minWidth="70" text="Cancel" onAction="#closeWindow"/>
     </HBox>
 </VBox>

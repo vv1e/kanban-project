@@ -20,15 +20,15 @@
     <VBox fx:id="categoryRootBox" styleClass="kanban-column-label-container" viewOrder="0" alignment="CENTER_LEFT">
         <HBox styleClass="kanban-column-label" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
             <Label fx:id="categoryLabel" styleClass="kanban-column-label-text" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <MenuButton text="☰" alignment="CENTER">
+            <MenuButton styleClass="kanban-column-menu" text="☰" alignment="CENTER">
                 <items>
-                    <MenuItem text="Rename" onAction="#onRenameAction"/>
-                    <MenuItem text="Move" onAction="#onMoveAction"/>
+                    <MenuItem text="_Rename" onAction="#onRenameAction"/>
+                    <MenuItem text="_Move" onAction="#onMoveAction"/>
                     <SeparatorMenuItem/>
-                    <MenuItem text="Delete" onAction="#onRemoveAction"/>
+                    <MenuItem text="_Delete" onAction="#onRemoveAction"/>
                 </items>
             </MenuButton>
         </HBox>
     </VBox>
-    <ListView fx:id="categoryListView" viewOrder="1" styleClass="common-column-list" VBox.vgrow="ALWAYS" focusTraversable="false"/>
+    <ListView fx:id="categoryListView" onKeyPressed="#onCellKeyPressedAction" viewOrder="1" styleClass="common-column-list" VBox.vgrow="ALWAYS"/>
 </VBox>

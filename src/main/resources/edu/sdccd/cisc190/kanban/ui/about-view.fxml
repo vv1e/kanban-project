@@ -6,8 +6,9 @@
 <VBox
     xmlns="http://javafx.com/javafx"
     prefHeight="400.0" prefWidth="600.0"
-    stylesheets="/about-style.css"
-    alignment="CENTER"
+    stylesheets="/rootstyle.css, /about-style.css"
+    alignment="CENTER_LEFT"
+    styleClass="about-root"
 >
     <Label styleClass="app-name" >Kanban Project</Label>
     <Label styleClass="app-version">Version ${project.version}</Label>

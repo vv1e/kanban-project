@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+@SuppressWarnings("unused")
 public interface WindowSetup {
     void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene);
 }
