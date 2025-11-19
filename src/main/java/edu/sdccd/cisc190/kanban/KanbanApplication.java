@@ -28,18 +28,4 @@ public class KanbanApplication extends Application {
     public static KanbanController getController() {
         return CONTROLLER;
     }
-
-    if (SaveManager.saveExists()) {
-        board = SaveManager.load(KanbanApplication.class);
-    } else {
-        board = new KanbanApplication();
-    }
-
-    // for save
-    try {
-        SaveManager.save(board);
-        System.out.println("Kanban Board saved!");
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 }
