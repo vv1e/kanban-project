@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jfx.vesion>21.0.6</jfx.vesion>
+        <jfx.version>21.0.6</jfx.version>
         <junit.version>5.12.1</junit.version>
     </properties>
 
@@ -19,12 +19,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${jfx.vesion}</version>
+            <version>${jfx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${jfx.vesion}</version>
+            <version>${jfx.version}</version>
         </dependency>
 
         <dependency>
