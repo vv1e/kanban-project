@@ -30,6 +30,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class KanbanController {
     private Board board;
     private final BooleanProperty isBoardLoaded = new SimpleBooleanProperty(false);
@@ -49,11 +52,15 @@ public class KanbanController {
     @FXML private ToggleGroup menuSortFieldToggleGroup;
     @FXML private ToggleGroup menuSortDirectionToggleGroup;
 
+    private static final Logger logger = LoggerFactory.getLogger(KanbanController.class);
+
     @FXML
     protected void initialize() {
+        logger.info("KanbanController initializing.");
          // macOS: This makes the menu bar use the system one instead of the JavaFX one.
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.APP_MENU_BAR)) {
             menuBar.setUseSystemMenuBar(true);
+            logger.debug("System menu bar support detected and enabled for macOS.");
         }
 
         // Several categories are supposed to be inaccessible when there is no board loaded.
@@ -77,6 +84,7 @@ public class KanbanController {
 
         menuSortFieldToggleGroup.selectedToggleProperty().addListener(this::onMenuSortModified);
         menuSortDirectionToggleGroup.selectedToggleProperty().addListener(this::onMenuSortModified);
+        logger.debug("Listeners attached to sort toggle groups.");
     }
 
     private void onMenuSortModified(ObservableValue<? extends Toggle> ignoredObservable, Toggle ignoredOldValue, Toggle ignoredNewValue) {
@@ -84,10 +92,12 @@ public class KanbanController {
         final SortDirection direction = SortDirection.valueOf((String) menuSortDirectionToggleGroup.getSelectedToggle().getUserData());
 
         sortingType.set(SortingType.from(field, direction));
+        logger.info("Sorting modified by user. Field: {}, Direction: {}", field, direction);
     }
 
     @FXML
     private void menuNewBoard() {
+        logger.info("User selected 'New Board' from menu.");
         try {
             WindowHelper.loadWindowDisableMenuBar(
                 BoardCreationController.class.getResource("board-creation-view.fxml"),
@@ -96,12 +106,14 @@ public class KanbanController {
                 null
             );
         } catch (IOException e) {
+            logger.error("Failed to load 'New Board' window.", e);
             WindowHelper.loadErrorWindow("New Board", (Stage) menuBar.getScene().getWindow());
         }
     }
 
     @FXML
     private void menuNewCategory() {
+        logger.info("User selected 'New Category' from menu.");
         try {
             WindowHelper.loadWindowDisableMenuBar(
                 CategoryNameSetController.class.getResource("category-name-change-view.fxml"),
@@ -110,12 +122,14 @@ public class KanbanController {
                 null
             );
         } catch (IOException e) {
+            logger.error("Failed to load 'New Category' window.", e);
             WindowHelper.loadErrorWindow("New Category", (Stage) menuBar.getScene().getWindow());
         }
     }
 
     @FXML
     private void menuNewIssue() {
+        logger.info("User selected 'New Issue' from menu.");
         class newIssueSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
@@ -131,18 +145,22 @@ public class KanbanController {
                 "New Issue",
                 new newIssueSetup()
             );
+            logger.debug("New Issue window FXML loaded successfully.");
         } catch (IOException e) {
+            logger.error("Failed to load 'New Issue' window.", e);
             WindowHelper.loadErrorWindow("New Issue", (Stage) menuBar.getScene().getWindow());
         }
     }
 
     @FXML
     private void menuCloseBoard() {
+        logger.info("User closed the current board.");
         setCurrentBoard(null);
     }
 
     @FXML
     void openAboutWindow() {
+        logger.info("User opened the 'About' window.");
         try {
             WindowHelper.loadWindowDisableMenuBar(
                 KanbanController.class.getResource("about-view.fxml"),
@@ -151,6 +169,7 @@ public class KanbanController {
                 null
             );
         } catch (IOException e) {
+            logger.error("Failed to load 'About Kanban' window.", e);
             WindowHelper.loadErrorWindow("About", (Stage) menuBar.getScene().getWindow());
         }
     }
@@ -167,8 +186,10 @@ public class KanbanController {
         this.board = board;
 
         kanbanColumns.getChildren().clear();
+        logger.debug("Kanban columns cleared.");
 
         if (board == null) {
+            logger.info("Board set to null. Returning to default application state.");
             setBoardToDefault(stage);
         } else {
             try {
@@ -176,8 +197,10 @@ public class KanbanController {
                 stage.setTitle(String.format("Kanban Project: %s", board.getName()));
 
                 welcomeLabel.setText(String.format("%s", board.getName()));
+                logger.info("Loaded new board: {}", board.getName());
 
                 final ArrayList<Category> categories = board.getCategories();
+                logger.debug("Found {} categories to load for this board.", categories.size());
 
                 // Creates the categories one by one
                 for (Category category : categories) {
@@ -187,6 +210,7 @@ public class KanbanController {
                 // Redirect focus away from any buttons by default
                 welcomeLabel.requestFocus();
             } catch (IOException | RuntimeIOException e) {
+                logger.error("Error loading categories for board '{}'. Reverting to default.", board.getName(), e);
                 setBoardToDefault(stage);
 
                 WindowHelper.createGenericErrorWindow(
@@ -205,6 +229,7 @@ public class KanbanController {
     }
 
     void createCategoryBox(Category category) throws IOException, RuntimeIOException {
+        logger.debug("Creating UI box for category: '{}'.", category.getName());
         FXMLLoader fxmlLoader = new FXMLLoader(KanbanController.class.getResource("components/category-box.fxml"));
         VBox categoryBox = fxmlLoader.load();
         CategoryBoxController controller =  fxmlLoader.getController();
@@ -215,22 +240,26 @@ public class KanbanController {
     }
 
     public void removeCategoryBox(int categoryId) {
+        logger.debug("Removing UI box for category: '{}'.", categoryId);
         kanbanColumns.getChildren().remove(categoryId);
     }
 
     public void moveCategoryBox(int oldCategoryId, int newCategoryId) {
+        logger.info("Moving category box from {} to {}", oldCategoryId, newCategoryId);
         VBox categoryBox = (VBox) kanbanColumns.getChildren().get(oldCategoryId);
         kanbanColumns.getChildren().remove(oldCategoryId);
         kanbanColumns.getChildren().add(newCategoryId, categoryBox);
     }
 
     public void openIssue(Issue issue) {
+        logger.info("Opening detail window for issue {}", issue.getName());
         class openIssueWindowSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
                 IssueController controller = fxmlLoader.getController();
                 controller.setIsIssueBeingCreated(false);
                 controller.setIssue(issue);
+                logger.debug("Issue window controller configured for view mode.");
             }
         }
 
@@ -241,6 +270,7 @@ public class KanbanController {
                 String.format("Issue: %s", issue.getName()),
                 new openIssueWindowSetup()
             );
+            logger.trace("Failed to load issue window.");
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("Issue Detail", (Stage) menuBar.getScene().getWindow());
         }
@@ -250,6 +280,7 @@ public class KanbanController {
      * Returns global MenuBar
      */
     public MenuBar getMenuBar() {
+        logger.trace("getMenuBar() called.");
         return menuBar;
     }
 
