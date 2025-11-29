@@ -57,6 +57,9 @@ public class IssueController {
     @FXML private Label issueAuthorByLabel;
     @FXML private Label issueAssigneeLabel;
 
+    @FXML private ScrollPane issueAttachmentListPane;
+    @FXML private HBox issueAttachmentListBox;
+
     @FXML private ListView<Comment> commentList;
 
     @FXML
@@ -95,7 +98,8 @@ public class IssueController {
                 issueDateModifiedLabel,
                 issueAuthorByLabel,
                 issueAssigneeBox,
-                issueCategoryComboBox
+                issueCategoryComboBox,
+                issueAttachmentListPane
             );
             rootBox.getStyleClass().clear();
             issueTitleField.getStyleClass().remove("issue-title");
@@ -153,6 +157,10 @@ public class IssueController {
 
         final String[] categoriesNames = board.getCategoriesNames();
         issueCategoryComboBox.getItems().addAll(categoriesNames);
+
+        if (issue.getAttachmentPaths().isEmpty()) {
+            ObjectHelper.removeNodes(issueAttachmentListPane);
+        }
 
         try {
             issueCategoryComboBox.setValue(categoriesNames[board.getCategoryOfIssue(issue.getId())]);
