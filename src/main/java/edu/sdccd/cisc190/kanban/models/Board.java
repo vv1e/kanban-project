@@ -1,17 +1,24 @@
 package edu.sdccd.cisc190.kanban.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.sdccd.cisc190.kanban.Launcher;
 import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Board {
     private final String name;
-    private final ArrayList<Category> categories;
+    private final ObservableList<Category> categories;
     private int issueLatest;
 
     /*
@@ -37,34 +44,36 @@ public class Board {
 
     public Board(String name) {
         this.name = name;
-        categories = new ArrayList<>();
+
+        this.categories = FXCollections.observableArrayList();
+
         issueLatest = 0;
 
         issueIdToCategoryId = new int[10];
         Arrays.fill(issueIdToCategoryId, -1);
 
         issueIdToPlacementInCategory = new int[10];
-        Arrays.fill(issueIdToPlacementInCategory, -1); // Easier for debugging
+        Arrays.fill(issueIdToPlacementInCategory, -1);
 
         String[] defaultCategories = new String[]{
-            "Backlog",
-            "In Progress",
-            "Bug Testing",
-            "Completed",
-            "Won't Do"
+                "Backlog",
+                "In Progress",
+                "Bug Testing",
+                "Completed",
+                "Won't Do"
         };
 
         for (String categoryName : defaultCategories) {
             categories.add(new Category(categoryName));
         }
 
-        // These issues only appear if the Kanban Board Program is run through a debugger.
         if (Launcher.DEBUG_MODE_ENABLED) {
             createIssue("Bug", "This is a bug", IssueType.BUG_REPORT, "Debug");
             createIssue("Feature", "This is a feature", IssueType.FEATURE_REQUEST, "Debug2");
             createIssue("Task", "This is a task", IssueType.TASK, "Debug3");
         }
     }
+
 
     public void createIssue(String name, String description, IssueType type, String creator) {
         categories.getFirst().addIssue(new Issue(name, description, creator, type, issueLatest));
@@ -115,8 +124,8 @@ public class Board {
         updateIssueCoordinateMapping(issueId, categoryId);
 
         issue.addComment(
-            "System",
-            String.format("Issue moved to \"%s.\"", getCategoriesNames()[categoryId])
+                "System",
+                String.format("Issue moved to \"%s.\"", getCategoriesNames()[categoryId])
         );
     }
 
@@ -127,7 +136,7 @@ public class Board {
         return category;
     }
 
-    public ArrayList<Category> getCategories() {
+    public ObservableList<Category> getCategories() {
         return categories;
     }
 
@@ -174,7 +183,7 @@ public class Board {
         }
 
         final Category category = popCategory(categoryId);
-        final int newCategoryId = categoryId == 0? categoryId : categoryId - 1;
+        final int newCategoryId = categoryId == 0 ? categoryId : categoryId - 1;
         final Category newCategory = categories.get(newCategoryId);
 
         for (Issue issue : category.getIssues()) {
@@ -182,8 +191,8 @@ public class Board {
             updateIssueCoordinateMapping(issue.getId(), newCategoryId);
 
             issue.addComment(
-                "System",
-                String.format("Issue moved to \"%s\" due to the removal of \"%s.\"", newCategory.getName(), category.getName())
+                    "System",
+                    String.format("Issue moved to \"%s\" due to the removal of \"%s.\"", newCategory.getName(), category.getName())
             );
         }
     }
@@ -194,7 +203,8 @@ public class Board {
 
     /**
      * Set/Update an Issue index coordinates for later lookup.
-     * @param issueId The Issue ID
+     *
+     * @param issueId    The Issue ID
      * @param categoryId Category it was moved to.
      */
     private void updateIssueCoordinateMapping(int issueId, int categoryId) {
@@ -202,7 +212,7 @@ public class Board {
         issueIdToPlacementInCategory = checkAndExpandArray(issueIdToPlacementInCategory, issueId);
 
         issueIdToCategoryId[issueId] = categoryId;
-        issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size()-1;
+        issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size() - 1;
     }
 
     private int[] checkAndExpandArray(int[] array, int index) {
@@ -213,5 +223,83 @@ public class Board {
         }
 
         return array;
+    }
+
+    private int findMaxIssueId() {
+        return categories.stream()
+                .flatMap(cat -> cat.getIssues().stream())
+                .mapToInt(Issue::getId)
+                .max()
+                .orElse(-1);
+    }
+
+    private void repairIssueCoordinateMapping() {
+        for (int i = 0; i < issueIdToCategoryId.length; i++) {
+            int catId = issueIdToCategoryId[i];
+
+            // Invalid category index
+            if (catId < 0 || catId >= categories.size()) {
+                issueIdToCategoryId[i] = -1;
+                issueIdToPlacementInCategory[i] = -1;
+                continue;
+            }
+
+            Category category = categories.get(catId);
+            if (issueIdToPlacementInCategory[i] >= category.size()) {
+                issueIdToCategoryId[i] = -1;
+                issueIdToPlacementInCategory[i] = -1;
+            }
+        }
+    }
+
+
+    @JsonCreator
+    public Board(
+            @JsonProperty("name") String name,
+            @JsonProperty("categories") ArrayList<Category> categories,
+            @JsonProperty("issueLatest") int issueLatest,
+            @JsonProperty("issueIdToCategoryId") int[] issueIdToCategoryId,
+            @JsonProperty("issueIdToPlacementInCategory") int[] issueIdToPlacementInCategory
+    ) {
+        this.name = name;
+        this.categories = FXCollections.observableArrayList();
+        if (categories != null) {
+            this.categories.addAll(categories);
+        }
+
+        this.issueLatest = issueLatest;
+
+        // If the arrays exist in JSON, use them; otherwise, will rebuild
+        this.issueIdToCategoryId = (issueIdToCategoryId != null) ? issueIdToCategoryId : new int[10];
+        this.issueIdToPlacementInCategory = (issueIdToPlacementInCategory != null) ? issueIdToPlacementInCategory : new int[10];
+
+        // Ensure issueLatest is at least max existing issue ID + 1
+        this.issueLatest = Math.max(this.issueLatest, findMaxIssueId() + 1);
+
+        // Rebuild mappings to correctly point to issues in categories
+        rebuildIssueMappings();
+    }
+
+    /**
+     * Rebuild the internal arrays that track where each issue is.
+     * Called after loading a board from JSON.
+     */
+    private void rebuildIssueMappings() {
+        int maxId = findMaxIssueId();
+        issueIdToCategoryId = new int[maxId + 1];
+        issueIdToPlacementInCategory = new int[maxId + 1];
+        Arrays.fill(issueIdToCategoryId, -1);
+        Arrays.fill(issueIdToPlacementInCategory, -1);
+
+        for (int catIndex = 0; catIndex < categories.size(); catIndex++) {
+            Category category = categories.get(catIndex);
+            ObservableList<Issue> issues = category.getIssues();
+            for (int i = 0; i < issues.size(); i++) {
+                Issue issue = issues.get(i);
+                int id = issue.getId();
+                issueIdToCategoryId[id] = catIndex;
+                issueIdToPlacementInCategory[id] = i;
+            }
+        }
     }
 }

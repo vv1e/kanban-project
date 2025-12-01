@@ -12,6 +12,7 @@ import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -149,7 +150,7 @@ public class IssueController {
         idLabel.setText(issue.getIdString());
         issueAssigneeLabel.setText(String.format("Assignee: %s", issue.getAssignee()));
 
-        commentList.setItems(issue.getComments());
+        commentList.setItems((ObservableList<Comment>) issue.getComments());
 
         final String[] categoriesNames = board.getCategoriesNames();
         issueCategoryComboBox.getItems().addAll(categoriesNames);
@@ -277,7 +278,7 @@ public class IssueController {
     }
 
     private void addComment() {
-        commentList.setItems(issue.getComments());
+        commentList.setItems((ObservableList<Comment>) issue.getComments());
     }
 
     @FXML

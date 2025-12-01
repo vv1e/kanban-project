@@ -1,5 +1,8 @@
 package edu.sdccd.cisc190.kanban.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.enums.SortDirection;
 import edu.sdccd.cisc190.kanban.enums.SortField;
 import edu.sdccd.cisc190.kanban.models.Category;
@@ -15,6 +18,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,11 +26,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -49,9 +57,13 @@ public class KanbanController {
     @FXML private ToggleGroup menuSortFieldToggleGroup;
     @FXML private ToggleGroup menuSortDirectionToggleGroup;
 
+    @FXML private BorderPane rootPane;
+
+    File currentFile;
+
     @FXML
     protected void initialize() {
-         // macOS: This makes the menu bar use the system one instead of the JavaFX one.
+
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.APP_MENU_BAR)) {
             menuBar.setUseSystemMenuBar(true);
         }
@@ -177,7 +189,7 @@ public class KanbanController {
 
                 welcomeLabel.setText(String.format("%s", board.getName()));
 
-                final ArrayList<Category> categories = board.getCategories();
+                final ObservableList<Category> categories = board.getCategories();
 
                 // Creates the categories one by one
                 for (Category category : categories) {
@@ -243,6 +255,86 @@ public class KanbanController {
             );
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("Issue Detail", (Stage) menuBar.getScene().getWindow());
+        }
+    }
+
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .enable(SerializationFeature.INDENT_OUTPUT);
+
+
+    public void loadFromFile(File file) {
+        this.currentFile = file;
+        try {
+            Board board = mapper.readValue(file, Board.class);
+            setCurrentBoard(board);
+        } catch (Exception e) {
+            e.printStackTrace();
+            WindowHelper.createGenericErrorWindow(
+                    Alert.AlertType.ERROR,
+                    "Could Not Load Board",
+                    "Failed to load Kanban board from file.",
+                    (Stage) menuBar.getScene().getWindow()
+            );
+        }
+    }
+
+    public void saveToFile(File file) {
+        this.currentFile = file;
+
+        try {
+            mapper.writeValue(file, board); // board is your currently loaded Board
+            System.out.println("Saved board to: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public BorderPane getRootPane() {
+        return rootPane;
+    }
+
+
+    private Stage getStage() {
+        return (Stage) menuBar.getScene().getWindow();
+    }
+
+    @FXML
+    private void handleOpen() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Kanban Board");
+        File file = chooser.showOpenDialog(getStage());
+
+        if (file != null) {
+            KanbanApplication.getController().loadFromFile(file);
+            System.out.println("Opened: " + file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        KanbanController controller = KanbanApplication.getController();
+
+        if (controller.getBoard() == null) {
+            return; // no board loaded, nothing to save
+        }
+
+        if (controller.currentFile == null) {
+            handleSaveAs();
+        } else {
+            controller.saveToFile(controller.currentFile);
+        }
+    }
+
+    @FXML
+    private void handleSaveAs() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save Kanban Board As");
+        File file = chooser.showSaveDialog(getStage());
+
+        if (file != null) {
+            KanbanApplication.getController().saveToFile(file);
         }
     }
 

@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CategoryBoxController {
     private Category category;
@@ -58,20 +59,26 @@ public class CategoryBoxController {
         this.category = category;
         categoryLabel.textProperty().bind(category.nameProperty());
 
-        final ObservableList<Issue> issues = category.getIssues();
+        final ObservableList<Issue> issues = category.getIssues(); // MUST be ObservableList
 
-        categoryListView.itemsProperty().bind(
-            Bindings.createObjectBinding(
-                () -> new SortedList<>(issues, sortingType.get().getComparator()),
-                sortingType
-            )
+        // Create one SortedList and bind its comparator
+        SortedList<Issue> sortedIssues = new SortedList<>(issues);
+        sortedIssues.comparatorProperty().bind(
+                Bindings.createObjectBinding(
+                        () -> sortingType.get().getComparator(),
+                        sortingType
+                )
         );
 
-        // Only make the list navigable to if it has children
+        // Assign items ONCE → no binding needed
+        categoryListView.setItems(sortedIssues);
+
+        // Only focusable if the category has issues
         categoryListView.focusTraversableProperty().bind(
-            Bindings.isNotEmpty(category.getIssues())
+                Bindings.isNotEmpty(issues)
         );
     }
+
 
     @FXML
     private void onRenameAction() {
