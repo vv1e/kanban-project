@@ -26,7 +26,7 @@ public class Issue implements Sortable {
 
     private final ObservableList<Comment> comments;
 
-    private final ArrayList<Path> attachmentPaths;
+    private ArrayList<Path> attachmentPaths;
 
     Issue(
         String name,
@@ -95,8 +95,8 @@ public class Issue implements Sortable {
         return attachmentPaths;
     }
 
-    public void addAttachmentPath(Path path) {
-        attachmentPaths.add(path);
+    public void setAttachmentPaths(ArrayList<Path> attachmentPaths) {
+       this.attachmentPaths = attachmentPaths;
     }
 
     public ObservableList<Comment> getComments() {
