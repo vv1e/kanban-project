@@ -8,6 +8,7 @@ import edu.sdccd.cisc190.kanban.nodes.ImageAttachmentView;
 import edu.sdccd.cisc190.kanban.ui.components.CommentCell;
 import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
+import edu.sdccd.cisc190.kanban.ui.components.NewAttachmentListCell;
 import edu.sdccd.cisc190.kanban.util.FileHelper;
 import edu.sdccd.cisc190.kanban.util.ObjectHelper;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
@@ -88,6 +89,14 @@ public class IssueController {
                     throw new RuntimeIOException(e);
                 }
             });
+
+            issueAttachmentPreviewList.setCellFactory(comment -> {
+                try {
+                    return new NewAttachmentListCell();
+                } catch (IOException e) {
+                    throw new RuntimeIOException(e);
+                }
+            });
         } catch (RuntimeIOException e) {
             WindowHelper.createGenericErrorWindow(
                 Alert.AlertType.ERROR,
@@ -122,6 +131,12 @@ public class IssueController {
 
             attachmentPaths = FXCollections.observableArrayList();
             issueAttachmentPreviewList.setItems(attachmentPaths);
+            issueAttachmentPreviewList.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                    () -> attachmentPaths.isEmpty(),
+                    attachmentPaths
+                )
+            );
         } else {
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
             ObjectHelper.removeNodes(
@@ -324,7 +339,7 @@ public class IssueController {
 
     private void populateAttachmentBox(ArrayList<Path> attachmentPaths) {
         for (Path path : attachmentPaths) {
-            final String absolutePath = path.toAbsolutePath().toString();
+            final String absolutePath = path.toString();
 
             // Create an ImageAttachmentView if file is an image, or an AttachmentView if it isn't.
             AttachmentView view = FileHelper.isFileAnImage(path) ?

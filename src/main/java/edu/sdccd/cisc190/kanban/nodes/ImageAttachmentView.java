@@ -43,6 +43,7 @@ public class ImageAttachmentView extends AttachmentView {
 
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
 
         hBox.getChildren().addAll(imageView);

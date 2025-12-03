@@ -74,6 +74,7 @@ public class AttachmentView extends VBox {
         HBox.setHgrow(label, Priority.ALWAYS);
 
         Button openButton = new Button("⬆");
+        openButton.setPrefWidth(55);
         openButton.setOnAction(this::openFileAction);
 
         HBox hBox = new HBox();
