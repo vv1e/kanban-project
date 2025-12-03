@@ -12,6 +12,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.ToggleGroup?>
+
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
@@ -27,11 +28,12 @@
                     <MenuItem fx:id="menuFileNewCategory" text="_Category" disable="true" onAction="#menuNewCategory"/>
                     <MenuItem fx:id="menuFileNewIssue" text="_Issue" disable="true" onAction="#menuNewIssue" accelerator="SHORTCUT+N"/>
                 </Menu>
-                <MenuItem text="_Open..." accelerator="SHORTCUT+O"/>
-                <SeparatorMenuItem/>
-                <MenuItem fx:id="menuFileSave" text="_Save" disable="true" accelerator="SHORTCUT+S"/>
-                <MenuItem fx:id="menuFileSaveAs" text="Save _As..." disable="true" accelerator="SHORTCUT+SHIFT+S"/>
-                <SeparatorMenuItem/>
+                    <MenuItem text="_Open..." onAction="#handleOpen" accelerator="SHORTCUT+O"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuFileSave" text="_Save" onAction="#handleSave" accelerator="SHORTCUT+S"/>
+                    <MenuItem fx:id="menuFileSaveAs" text="Save _As..." onAction="#handleSaveAs" accelerator="SHORTCUT+SHIFT+S"/>
+                    <SeparatorMenuItem/>
+
                 <MenuItem fx:id="menuFileClose" text="_Close Kanban Board" disable="true" onAction="#menuCloseBoard" accelerator="SHORTCUT+SHIFT+T"/>
             </Menu>
             <Menu text="_View">

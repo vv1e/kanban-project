@@ -37,7 +37,7 @@ public class CommentCell extends ListCell<Comment> {
             setGraphic(rootView);
 
             commentAuthorLabel.setText(comment.getAuthor());
-            commentDateLabel.setText(comment.getCreationDate());
+            commentDateLabel.setText(String.valueOf(comment.getCreationDate()));
             commentTextLabel.setText(comment.getComment());
         }
     }

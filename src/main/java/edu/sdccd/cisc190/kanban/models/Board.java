@@ -1,18 +1,25 @@
 package edu.sdccd.cisc190.kanban.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.sdccd.cisc190.kanban.Launcher;
 import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Board {
     private final String name;
-    private final ArrayList<Category> categories;
+    private final ObservableList<Category> categories;
     private int issueLatest;
 
     /*
@@ -38,7 +45,9 @@ public class Board {
 
     public Board(String name) {
         this.name = name;
-        categories = new ArrayList<>();
+
+        this.categories = FXCollections.observableArrayList();
+
         issueLatest = 0;
 
         issueIdToCategoryId = new int[10];
@@ -79,8 +88,6 @@ public class Board {
         categories.getFirst().addIssue(issue);
         updateIssueCoordinateMapping(issueLatest++, 0);
     }
-
-
 
     public Issue getIssue(int id) throws IssueNotFoundException {
         if (issueIdToCategoryId[id] == -1) {
@@ -138,7 +145,7 @@ public class Board {
         return category;
     }
 
-    public ArrayList<Category> getCategories() {
+    public ObservableList<Category> getCategories() {
         return categories;
     }
 
@@ -185,7 +192,7 @@ public class Board {
         }
 
         final Category category = popCategory(categoryId);
-        final int newCategoryId = categoryId == 0? categoryId : categoryId - 1;
+        final int newCategoryId = categoryId == 0 ? categoryId : categoryId - 1;
         final Category newCategory = categories.get(newCategoryId);
 
         for (Issue issue : category.getIssues()) {
@@ -213,7 +220,7 @@ public class Board {
         issueIdToPlacementInCategory = checkAndExpandArray(issueIdToPlacementInCategory, issueId);
 
         issueIdToCategoryId[issueId] = categoryId;
-        issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size()-1;
+        issueIdToPlacementInCategory[issueId] = categories.get(categoryId).size() - 1;
     }
 
     private int[] checkAndExpandArray(int[] array, int index) {
@@ -224,5 +231,86 @@ public class Board {
         }
 
         return array;
+    }
+
+    private int findMaxIssueId() {
+        return categories.stream()
+                .flatMap(cat -> cat.getIssues().stream())
+                .mapToInt(Issue::getId)
+                .max()
+                .orElse(-1);
+    }
+
+    // vv1e: I have no idea what this does, the code never calls this so hopefully it doesn't
+    //       have to be included
+
+//    private void repairIssueCoordinateMapping() {
+//        for (int i = 0; i < issueIdToCategoryId.length; i++) {
+//            int catId = issueIdToCategoryId[i];
+//
+//            // Invalid category index
+//            if (catId < 0 || catId >= categories.size()) {
+//                issueIdToCategoryId[i] = -1;
+//                issueIdToPlacementInCategory[i] = -1;
+//                continue;
+//            }
+//
+//            Category category = categories.get(catId);
+//            if (issueIdToPlacementInCategory[i] >= category.size()) {
+//                issueIdToCategoryId[i] = -1;
+//                issueIdToPlacementInCategory[i] = -1;
+//            }
+//        }
+//    }
+
+
+    @JsonCreator
+    public Board(
+            @JsonProperty("name") String name,
+            @JsonProperty("categories") ArrayList<Category> categories,
+            @JsonProperty("issueLatest") int issueLatest,
+            @JsonProperty("issueIdToCategoryId") int[] issueIdToCategoryId,
+            @JsonProperty("issueIdToPlacementInCategory") int[] issueIdToPlacementInCategory
+    ) {
+        this.name = name;
+        this.categories = FXCollections.observableArrayList();
+        if (categories != null) {
+            this.categories.addAll(categories);
+        }
+
+        this.issueLatest = issueLatest;
+
+        // If the arrays exist in JSON, use them; otherwise, will rebuild
+        this.issueIdToCategoryId = (issueIdToCategoryId != null) ? issueIdToCategoryId : new int[10];
+        this.issueIdToPlacementInCategory = (issueIdToPlacementInCategory != null) ? issueIdToPlacementInCategory : new int[10];
+
+        // Ensure issueLatest is at least max existing issue ID + 1
+        this.issueLatest = Math.max(this.issueLatest, findMaxIssueId() + 1);
+
+        // Rebuild mappings to correctly point to issues in categories
+        rebuildIssueMappings();
+    }
+
+    /**
+     * Rebuild the internal arrays that track where each issue is.
+     * Called after loading a board from JSON.
+     */
+    private void rebuildIssueMappings() {
+        int maxId = findMaxIssueId();
+        issueIdToCategoryId = new int[maxId + 1];
+        issueIdToPlacementInCategory = new int[maxId + 1];
+        Arrays.fill(issueIdToCategoryId, -1);
+        Arrays.fill(issueIdToPlacementInCategory, -1);
+
+        for (int catIndex = 0; catIndex < categories.size(); catIndex++) {
+            Category category = categories.get(catIndex);
+            ObservableList<Issue> issues = category.getIssues();
+            for (int i = 0; i < issues.size(); i++) {
+                Issue issue = issues.get(i);
+                int id = issue.getId();
+                issueIdToCategoryId[id] = catIndex;
+                issueIdToPlacementInCategory[id] = i;
+            }
+        }
     }
 }

@@ -1,5 +1,8 @@
 package edu.sdccd.cisc190.kanban.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.enums.SortDirection;
 import edu.sdccd.cisc190.kanban.enums.SortField;
 import edu.sdccd.cisc190.kanban.models.Category;
@@ -15,6 +18,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,11 +28,13 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +58,14 @@ public class KanbanController {
     @FXML private ToggleGroup menuSortFieldToggleGroup;
     @FXML private ToggleGroup menuSortDirectionToggleGroup;
 
+    File currentFile;
+
     private static final Logger logger = LoggerFactory.getLogger(KanbanController.class);
 
     @FXML
     protected void initialize() {
         logger.info("KanbanController initializing.");
+
          // macOS: This makes the menu bar use the system one instead of the JavaFX one.
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.APP_MENU_BAR)) {
             menuBar.setUseSystemMenuBar(true);
@@ -191,6 +200,7 @@ public class KanbanController {
         if (board == null) {
             logger.info("Board set to null. Returning to default application state.");
             setBoardToDefault(stage);
+            currentFile = null;
         } else {
             try {
                 isBoardLoaded.setValue(true);
@@ -199,7 +209,7 @@ public class KanbanController {
                 welcomeLabel.setText(String.format("%s", board.getName()));
                 logger.info("Loaded new board: {}", board.getName());
 
-                final ArrayList<Category> categories = board.getCategories();
+                final ObservableList<Category> categories = board.getCategories();
                 logger.debug("Found {} categories to load for this board.", categories.size());
 
                 // Creates the categories one by one
@@ -274,6 +284,91 @@ public class KanbanController {
         } catch (IOException e) {
             WindowHelper.loadErrorWindow("Issue Detail", (Stage) menuBar.getScene().getWindow());
         }
+    }
+
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .enable(SerializationFeature.INDENT_OUTPUT);
+
+
+    public void loadFromFile(File file) {
+        this.currentFile = file;
+        try {
+            Board board = mapper.readValue(file, Board.class);
+            setCurrentBoard(board);
+        } catch (Exception e) {
+            logger.error("Error while loading board from file '{}'.", file.getName(), e);
+
+            WindowHelper.createGenericErrorWindow(
+                    Alert.AlertType.ERROR,
+                    "Could Not Load Board",
+                    "Failed to load Kanban board from file.",
+                    (Stage) menuBar.getScene().getWindow()
+            );
+        }
+    }
+
+    public void saveToFile(File file) {
+        this.currentFile = file;
+
+        try {
+            mapper.writeValue(file, board); // board is your currently loaded Board
+            logger.info("Board saved to '{}'.", file.getAbsolutePath());
+        } catch (Exception e) {
+            logger.error("Error while saving board to '{}'.", file.getAbsolutePath(), e);
+        }
+    }
+
+    private Stage getStage() {
+        return (Stage) menuBar.getScene().getWindow();
+    }
+
+    @FXML
+    private void handleOpen() {
+        FileChooser chooser = getFileChooser();
+        chooser.setTitle("Open Kanban Board");
+        File file = chooser.showOpenDialog(getStage());
+
+        if (file != null) {
+            KanbanApplication.getController().loadFromFile(file);
+            logger.info("Opened file: {}",  file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        KanbanController controller = KanbanApplication.getController();
+
+        if (controller.getBoard() == null) {
+            return; // no board loaded, nothing to save
+        }
+
+        if (controller.currentFile == null) {
+            handleSaveAs();
+        } else {
+            controller.saveToFile(controller.currentFile);
+        }
+    }
+
+    @FXML
+    private void handleSaveAs() {
+        FileChooser chooser = getFileChooser();
+        chooser.setTitle("Save Kanban Board As");
+        chooser.setInitialFileName(KanbanApplication.getController().getBoard().getName());
+        File file = chooser.showSaveDialog(getStage());
+
+        if (file != null) {
+            KanbanApplication.getController().saveToFile(file);
+        }
+    }
+
+    private FileChooser getFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("JSON Board Definition", "*.json")
+        );
+        return chooser;
     }
 
     /**
