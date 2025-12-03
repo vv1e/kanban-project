@@ -8,7 +8,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Issue implements Sortable {
     private final int id;
@@ -23,6 +25,8 @@ public class Issue implements Sortable {
     private final ObjectProperty<LocalDateTime> dateModified = new SimpleObjectProperty<>();
 
     private final ObservableList<Comment> comments;
+
+    private ArrayList<Path> attachmentPaths;
 
     Issue(
         String name,
@@ -42,6 +46,8 @@ public class Issue implements Sortable {
 
         this.dateCreated = LocalDateTime.now();
         this.dateModified.set(this.dateCreated);
+
+        attachmentPaths = new ArrayList<>();
 
         this.comments = FXCollections.observableArrayList();
         this.addComment("System", "Issue created.");
@@ -83,6 +89,14 @@ public class Issue implements Sortable {
             "System",
             String.format("Set assignee to %s.", assignee)
         );
+    }
+
+    public ArrayList<Path> getAttachmentPaths() {
+        return attachmentPaths;
+    }
+
+    public void setAttachmentPaths(ArrayList<Path> attachmentPaths) {
+       this.attachmentPaths = attachmentPaths;
     }
 
     public ObservableList<Comment> getComments() {

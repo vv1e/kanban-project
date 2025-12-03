@@ -22,4 +22,6 @@ module edu.sdccd.cisc190.kanban {
     opens edu.sdccd.cisc190.kanban.util.exceptions to javafx.fxml;
     exports edu.sdccd.cisc190.kanban.enums;
     opens edu.sdccd.cisc190.kanban.enums to javafx.fxml;
+    exports edu.sdccd.cisc190.kanban.nodes;
+    opens edu.sdccd.cisc190.kanban.nodes to javafx.fxml;
 }

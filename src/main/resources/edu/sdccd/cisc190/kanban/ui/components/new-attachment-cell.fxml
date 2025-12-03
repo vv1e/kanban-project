@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+
+    alignment="CENTER_LEFT"
+    styleClass="new-attachment-view"
+>
+    <Label styleClass="new-attachment-label" fx:id="attachmentNameLabel" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+
+    <Button fx:id="attachmentRemoveButton">❌</Button>
+</HBox>

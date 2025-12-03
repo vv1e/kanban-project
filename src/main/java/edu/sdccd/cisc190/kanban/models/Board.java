@@ -6,6 +6,7 @@ import edu.sdccd.cisc190.kanban.util.exceptions.BrokenIssueLinkException;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.LastCategoryDeletionException;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -60,16 +61,26 @@ public class Board {
 
         // These issues only appear if the Kanban Board Program is run through a debugger.
         if (Launcher.DEBUG_MODE_ENABLED) {
-            createIssue("Bug", "This is a bug", IssueType.BUG_REPORT, "Debug");
-            createIssue("Feature", "This is a feature", IssueType.FEATURE_REQUEST, "Debug2");
-            createIssue("Task", "This is a task", IssueType.TASK, "Debug3");
+            createIssue("Bug", "This is a bug", IssueType.BUG_REPORT, "Debug", new ArrayList<>());
+            createIssue("Feature", "This is a feature", IssueType.FEATURE_REQUEST, "Debug2", new ArrayList<>());
+            createIssue("Task", "This is a task", IssueType.TASK, "Debug3", new ArrayList<>());
         }
     }
 
-    public void createIssue(String name, String description, IssueType type, String creator) {
-        categories.getFirst().addIssue(new Issue(name, description, creator, type, issueLatest));
+    public void createIssue(
+        String name,
+        String description,
+        IssueType type,
+        String creator,
+        ArrayList<Path> attachments
+    ) {
+        Issue issue = new Issue(name, description, creator, type, issueLatest);
+        issue.setAttachmentPaths(attachments);
+        categories.getFirst().addIssue(issue);
         updateIssueCoordinateMapping(issueLatest++, 0);
     }
+
+
 
     public Issue getIssue(int id) throws IssueNotFoundException {
         if (issueIdToCategoryId[id] == -1) {

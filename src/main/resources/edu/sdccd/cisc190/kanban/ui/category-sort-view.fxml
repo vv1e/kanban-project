@@ -21,7 +21,7 @@
             Use the arrow buttons to move the category.
         </Label>
         <HBox VBox.vgrow="ALWAYS" spacing="5">
-            <ListView fx:id="categoryListView" focusTraversable="false" HBox.hgrow="ALWAYS" disable="true"/>
+            <ListView fx:id="categoryListView" focusTraversable="false" HBox.hgrow="ALWAYS"/>
             <VBox alignment="CENTER" spacing="2">
                 <Button fx:id="moveUpButton" text="⏶" onAction="#onMoveUpAction"/>
                 <Button fx:id="moveDownButton" text="⏷" onAction="#onMoveDownAction"/>

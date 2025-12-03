@@ -2,7 +2,7 @@ package edu.sdccd.cisc190.kanban.enums;
 
 public enum IssueType {
     BUG_REPORT("B", "bug-tag"),
-    FEATURE_REQUEST("T", "feature-tag"),
+    FEATURE_REQUEST("F", "feature-tag"),
     TASK("T", "task-tag");
 
     private final String letter;

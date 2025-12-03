@@ -141,7 +141,7 @@ public class KanbanController {
         try {
             WindowHelper.loadWindowDisableMenuBar(
                 IssueController.class.getResource("issue-view.fxml"),
-                400, 400, true,
+                400, 500, true,
                 "New Issue",
                 new newIssueSetup()
             );

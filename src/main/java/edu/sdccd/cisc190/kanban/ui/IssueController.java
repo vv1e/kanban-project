@@ -3,15 +3,21 @@ package edu.sdccd.cisc190.kanban.ui;
 import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.models.Board;
 import edu.sdccd.cisc190.kanban.enums.IssueType;
+import edu.sdccd.cisc190.kanban.nodes.AttachmentView;
+import edu.sdccd.cisc190.kanban.nodes.ImageAttachmentView;
 import edu.sdccd.cisc190.kanban.ui.components.CommentCell;
 import edu.sdccd.cisc190.kanban.models.Comment;
 import edu.sdccd.cisc190.kanban.models.Issue;
+import edu.sdccd.cisc190.kanban.ui.components.NewAttachmentListCell;
+import edu.sdccd.cisc190.kanban.util.FileHelper;
 import edu.sdccd.cisc190.kanban.util.ObjectHelper;
 import edu.sdccd.cisc190.kanban.util.WindowHelper;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
 import edu.sdccd.cisc190.kanban.util.exceptions.RuntimeIOException;
 import edu.sdccd.cisc190.kanban.util.interfaces.WindowSetup;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,9 +25,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +40,9 @@ import org.slf4j.LoggerFactory;
 
 public class IssueController {
     protected Issue issue;
+    // For the creation screen
+    private ObservableList<Path> attachmentPaths;
+
     @FXML private VBox rootBox;
 
     @FXML private HBox propertiesBox;
@@ -60,6 +73,13 @@ public class IssueController {
     @FXML private Label issueAuthorByLabel;
     @FXML private Label issueAssigneeLabel;
 
+    @FXML private ListView<Path> issueAttachmentPreviewList;
+
+    @FXML private VBox issueAttachmentCreationBox;
+
+    @FXML private ScrollPane issueAttachmentListPane;
+    @FXML private HBox issueAttachmentListBox;
+
     @FXML private ListView<Comment> commentList;
 
     private static final Logger logger = LoggerFactory.getLogger(IssueController.class);
@@ -72,6 +92,14 @@ public class IssueController {
                     return new CommentCell();
                 } catch (IOException e) {
                     logger.error("Failed to initialize CommentCell", e);
+                    throw new RuntimeIOException(e);
+                }
+            });
+
+            issueAttachmentPreviewList.setCellFactory(comment -> {
+                try {
+                    return new NewAttachmentListCell();
+                } catch (IOException e) {
                     throw new RuntimeIOException(e);
                 }
             });
@@ -103,10 +131,20 @@ public class IssueController {
                 issueDateModifiedLabel,
                 issueAuthorByLabel,
                 issueAssigneeBox,
-                issueCategoryComboBox
+                issueCategoryComboBox,
+                issueAttachmentListPane
             );
             rootBox.getStyleClass().clear();
             issueTitleField.getStyleClass().remove("issue-title");
+
+            attachmentPaths = FXCollections.observableArrayList();
+            issueAttachmentPreviewList.setItems(attachmentPaths);
+            issueAttachmentPreviewList.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                    () -> attachmentPaths.isEmpty(),
+                    attachmentPaths
+                )
+            );
         } else {
             logger.info("Setting up window for 'View Issue' mode.");
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
@@ -115,6 +153,7 @@ public class IssueController {
                 issueTitleLabel,
                 issueAuthorLabel,
                 issueDescriptionLabel,
+                issueAttachmentCreationBox,
                 createOKButton
             );
             ObjectHelper.setControlToReadonly(
@@ -164,6 +203,12 @@ public class IssueController {
         final String[] categoriesNames = board.getCategoriesNames();
         issueCategoryComboBox.getItems().addAll(categoriesNames);
 
+        if (issue.getAttachmentPaths().isEmpty()) {
+            ObjectHelper.removeNodes(issueAttachmentListPane);
+        } else {
+            populateAttachmentBox(issue.getAttachmentPaths());
+        }
+
         try {
             issueCategoryComboBox.setValue(categoriesNames[board.getCategoryOfIssue(issue.getId())]);
             logger.debug("Successfully set category combo box value for issue ID: {}", issue.getId());
@@ -207,7 +252,8 @@ public class IssueController {
                 issueTitleField.getText().trim(),
                 issueDescriptionArea.getText().trim(),
                 type,
-                issueAuthorField.getText().trim()
+                issueAuthorField.getText().trim(),
+                new ArrayList<>(attachmentPaths)
             );
 
             logger.info("Successfully created new issue titled: '{}'", issueTitleField.getText().trim());
@@ -305,9 +351,33 @@ public class IssueController {
         );
     }
 
+    @FXML
+    private void onAddAttachmentButtonAction() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File selectedFile = fileChooser.showOpenDialog(rootBox.getScene().getWindow());
+        if (selectedFile != null) {
+            assert attachmentPaths != null; //The button is only visible when attachmentPaths is intialized.
+            attachmentPaths.add(selectedFile.toPath());
+        }
+    }
+
     private void addComment() {
         commentList.setItems(issue.getComments());
         logger.info("New comment added and comment list refreshed for issue ID {}.", issue.getId());
+    }
+
+    private void populateAttachmentBox(ArrayList<Path> attachmentPaths) {
+        for (Path path : attachmentPaths) {
+            final String absolutePath = path.toString();
+
+            // Create an ImageAttachmentView if file is an image, or an AttachmentView if it isn't.
+            AttachmentView view = FileHelper.isFileAnImage(path) ?
+                new ImageAttachmentView(absolutePath) :
+                new AttachmentView(absolutePath);
+
+            issueAttachmentListBox.getChildren().add(view);
+        }
     }
 
     @FXML

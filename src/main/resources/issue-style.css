@@ -68,6 +68,13 @@
     -fx-text-fill: gray !important;
 }
 
+.attachment-pane, .attachment-pane:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
 .text-field:readonly,
 .text-area:readonly {
     -fx-border-width: 0;

@@ -11,67 +11,85 @@
 
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ScrollPane?>
 <VBox
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="edu.sdccd.cisc190.kanban.ui.IssueController"
-    stylesheets="/rootstyle.css, /issue-style.css"
+    stylesheets="/rootstyle.css, /issue-style.css, /attachment-style.css"
     styleClass="issue-rootview"
 >
     <HBox VBox.vgrow="ALWAYS" spacing="10">
-        <VBox fx:id="rootBox" spacing="5" styleClass="common-issue" HBox.hgrow="SOMETIMES">
-            <HBox HBox.hgrow="SOMETIMES">
-                <VBox HBox.hgrow="SOMETIMES" spacing="5">
-                    <HBox fx:id="propertiesBox">
-                        <Label fx:id="tagLabel" styleClass="common-tag" alignment="CENTER" prefHeight="18" prefWidth="18">B</Label>
-                        <Label fx:id="idLabel" styleClass="id-tag" prefHeight="18">#123456</Label>
-                    </HBox>
-                    <VBox HBox.hgrow="ALWAYS" spacing="5">
-                        <Label fx:id="issueTitleLabel" styleClass="common-field-label">
-                            TITLE:
-                        </Label>
-                        <TextField fx:id="issueTitleField" styleClass="issue-title" promptText="Title" HBox.hgrow="SOMETIMES" maxWidth="Infinity"/>
+        <VBox spacing="10" HBox.hgrow="SOMETIMES">
+            <VBox fx:id="rootBox" spacing="5" styleClass="common-issue" HBox.hgrow="SOMETIMES" VBox.vgrow="ALWAYS">
+                <HBox HBox.hgrow="SOMETIMES">
+                    <VBox HBox.hgrow="SOMETIMES" spacing="5">
+                        <HBox fx:id="propertiesBox">
+                            <Label fx:id="tagLabel" styleClass="common-tag" alignment="CENTER" prefHeight="18" prefWidth="18">B</Label>
+                            <Label fx:id="idLabel" styleClass="id-tag" prefHeight="18">#123456</Label>
+                        </HBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="5">
+                            <Label fx:id="issueTitleLabel" styleClass="common-field-label">
+                                TITLE*:
+                            </Label>
+                            <TextField fx:id="issueTitleField" styleClass="issue-title" promptText="Title" HBox.hgrow="SOMETIMES" maxWidth="Infinity"/>
+                        </VBox>
                     </VBox>
-                </VBox>
-                <ComboBox fx:id="issueCategoryComboBox" onAction="#onComboBoxChangeCategory"/>
-            </HBox>
-            <VBox HBox.hgrow="ALWAYS" spacing="5">
-                <Label fx:id="issueAuthorLabel" styleClass="common-field-label">AUTHOR:</Label>
-                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-                    <Label fx:id="issueAuthorByLabel">
-                        By:&#160;
+                    <ComboBox fx:id="issueCategoryComboBox" onAction="#onComboBoxChangeCategory"/>
+                </HBox>
+                <VBox HBox.hgrow="ALWAYS" spacing="5">
+                    <Label fx:id="issueAuthorLabel" styleClass="common-field-label">
+                        AUTHOR*:
                     </Label>
-                    <TextField fx:id="issueAuthorField" promptText="Author" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+                        <Label fx:id="issueAuthorByLabel">
+                            By:&#160;
+                        </Label>
+                        <TextField fx:id="issueAuthorField" promptText="Author" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    </HBox>
+                </VBox>
+                <VBox spacing="10" styleClass="issue-date-container">
+                    <Label fx:id="issueDateCreatedLabel">Created on: N/A</Label>
+                    <Label fx:id="issueDateModifiedLabel">Last modified on: N/A</Label>
+                </VBox>
+                <HBox fx:id="issueAssigneeBox" spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+                    <Label fx:id="issueAssigneeLabel" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        Assignee: None
+                    </Label>
+                    <Button text="Change" onAction="#openAssigneeDialog" />
                 </HBox>
-            </VBox>
-            <VBox spacing="10" styleClass="issue-date-container">
-                <Label fx:id="issueDateCreatedLabel">Created on: N/A</Label>
-                <Label fx:id="issueDateModifiedLabel">Last modified on: N/A</Label>
-            </VBox>
-            <HBox fx:id="issueAssigneeBox" spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-                <Label fx:id="issueAssigneeLabel" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    Assignee: None
-                </Label>
-                <Button text="Change" onAction="#openAssigneeDialog" />
-            </HBox>
-            <VBox fx:id="toggleBox" HBox.hgrow="ALWAYS" spacing="5">
-                <fx:define>
-                    <ToggleGroup fx:id="typeToggleGroup"/>
-                </fx:define>
+                <VBox fx:id="toggleBox" HBox.hgrow="ALWAYS" spacing="5">
+                    <fx:define>
+                        <ToggleGroup fx:id="typeToggleGroup"/>
+                    </fx:define>
 
-                <Label styleClass="common-field-label">ISSUE TYPE:</Label>
-                <HBox>
-                    <ToggleButton toggleGroup="$typeToggleGroup" userData="BUG_REPORT" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
-                    <ToggleButton toggleGroup="$typeToggleGroup" userData="FEATURE_REQUEST" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
-                    <ToggleButton toggleGroup="$typeToggleGroup" userData="TASK" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
-                </HBox>
+                    <Label styleClass="common-field-label">
+                        ISSUE TYPE*:
+                    </Label>
+
+                    <HBox>
+                        <ToggleButton toggleGroup="$typeToggleGroup" userData="BUG_REPORT" styleClass="bug-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" selected="true" text="Bug Report"/>
+                        <ToggleButton toggleGroup="$typeToggleGroup" userData="FEATURE_REQUEST" styleClass="feature-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Feature Request"/>
+                        <ToggleButton toggleGroup="$typeToggleGroup" userData="TASK" styleClass="task-toggle" minWidth="120" maxWidth="Infinity" HBox.hgrow="ALWAYS" text="Task"/>
+                    </HBox>
+                </VBox>
+                <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" spacing="5">
+                    <Label fx:id="issueDescriptionLabel" styleClass="common-field-label">
+                        DESCRIPTION*:
+                    </Label>
+                    <TextArea fx:id="issueDescriptionArea" prefWidth="200" prefRowCount="0" minHeight="0" promptText="Description" VBox.vgrow="ALWAYS" wrapText="true"/>
+                </VBox>
+                <VBox fx:id="issueAttachmentCreationBox" spacing="5">
+                    <Label styleClass="common-field-label" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        ATTACHMENTS:
+                    </Label>
+                    <ListView fx:id="issueAttachmentPreviewList" prefHeight="75"/>
+                    <Button onAction="#onAddAttachmentButtonAction" maxWidth="Infinity">+</Button>
+                </VBox>
             </VBox>
-            <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" spacing="5">
-                <Label fx:id="issueDescriptionLabel" styleClass="common-field-label">
-                    DESCRIPTION:
-                </Label>
-                <TextArea fx:id="issueDescriptionArea" prefWidth="200" promptText="Description" VBox.vgrow="ALWAYS" wrapText="true"/>
-            </VBox>
+            <ScrollPane fx:id="issueAttachmentListPane" styleClass="attachment-pane" fitToHeight="true">
+                <HBox fx:id="issueAttachmentListBox" spacing="5"/>
+            </ScrollPane>
         </VBox>
         <VBox fx:id="commentsBox" styleClass="common-column" HBox.hgrow="ALWAYS">
             <VBox viewOrder="0" styleClass="issue-commentbox-header-container">
