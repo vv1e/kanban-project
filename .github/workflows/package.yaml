@@ -49,23 +49,20 @@ jobs:
           echo "C:\Program Files\Wix Toolset v3.11\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         shell: powershell
 
-      - name: Build and Package with Maven (jpackage)
+      - name: Update Linux
+        if: matrix.os == 'ubunut-latest'
         run: |
-          # On Linux, installing libgtk2.0-0 is required for jpackage to work
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get update
-            sudo apt-get install -y libgtk2.0-0
-          fi
-          
-          # 'clean package' will compile, create JAR, and then execute the jpackage-maven-plugin goal
+          sudo apt-get update
+          sudo apt-get install -y ligbtk2.0-0
+        shell: bash
+
+      - name: Build and Package with Maven (jpackage)
+        run: |          
           mvn -B clean package --file pom.xml
 
       - name: Find Generated Installer File
         id: find_file
         run: |
-          # Search for the generated installer file in the target/installer directory
-          # Adjust the glob pattern if your app name or version is dynamic
-          # Assuming app name is 'MyJavaFXApp' and version is 1.0.0
           INSTALLER_PATH=$(find target/installer -name "MyJavaFXApp-*-${{ matrix.installer_ext }}" -print -quit)
           echo "installer_path=$INSTALLER_PATH" >> $GITHUB_OUTPUT
         shell: bash
