@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class IssueController {
     protected Issue issue;
     @FXML private VBox rootBox;
@@ -59,6 +62,8 @@ public class IssueController {
 
     @FXML private ListView<Comment> commentList;
 
+    private static final Logger logger = LoggerFactory.getLogger(IssueController.class);
+
     @FXML
     protected void initialize() {
         try {
@@ -66,6 +71,7 @@ public class IssueController {
                 try {
                     return new CommentCell();
                 } catch (IOException e) {
+                    logger.error("Failed to initialize CommentCell", e);
                     throw new RuntimeIOException(e);
                 }
             });
@@ -79,6 +85,7 @@ public class IssueController {
                     """,
                 (Stage) rootBox.getScene().getWindow()
             );
+            logger.error("Failed to open Issue Window", e);
         }
     }
 
@@ -88,6 +95,7 @@ public class IssueController {
      */
     public void setIsIssueBeingCreated(boolean issueBeingCreated) {
         if (issueBeingCreated) {
+            logger.info("Setting up window for 'New Issue' creation mode.");
             ObjectHelper.removeNodes(
                 propertiesBox,
                 commentsBox,
@@ -100,6 +108,7 @@ public class IssueController {
             rootBox.getStyleClass().clear();
             issueTitleField.getStyleClass().remove("issue-title");
         } else {
+            logger.info("Setting up window for 'View Issue' mode.");
             // Sets prompts to read-only, removes the "OK Cancel" bar, removes the labels above the prompts during View mode.
             ObjectHelper.removeNodes(
                 toggleBox,
@@ -124,13 +133,14 @@ public class IssueController {
     }
 
     /**
-     * Sets issue informartion in the "View Issue" window
+     * Sets issue information in the "View Issue" window
      * @param issue Issue to be viewed
      */
     public void setIssue(Issue issue) {
         final Board board = KanbanApplication.getController().getBoard();
 
         this.issue = issue;
+        logger.info("Loading issue ID: {} into view.", issue.getId());
 
         issueTitleField.setText(issue.getName());
         issueAuthorField.setText(issue.getCreator());
@@ -156,13 +166,16 @@ public class IssueController {
 
         try {
             issueCategoryComboBox.setValue(categoriesNames[board.getCategoryOfIssue(issue.getId())]);
+            logger.debug("Successfully set category combo box value for issue ID: {}", issue.getId());
         } catch (IssueNotFoundException e) {
+            logger.error("IssueNotFoundException while setting category combo box for ID: {}", issue.getId(), e);
             throw new RuntimeException("Unexpected IssueNotFoundException", e);
         }
     }
 
     @FXML
     private void createIssue(ActionEvent event) {
+        logger.info("Attempting to create a new issue.");
         final Board board = KanbanApplication.getController().getBoard();
 
         String[] issueProblems = new String[10];
@@ -171,10 +184,12 @@ public class IssueController {
 
         if (issueTitleField.getText().trim().isEmpty()) {
             issueProblems[problemNumber++] = " - The issue title cannot be empty.";
+            logger.warn("Validation failed: Issue title empty.");
         }
 
         if (issueDescriptionArea.getText().trim().isEmpty()) {
             issueProblems[problemNumber++] = " - The issue description cannot be empty.";
+            logger.warn("Validation failed: Issue description empty.");
         }
 
         if (typeToggleGroup.getSelectedToggle() == null) {
@@ -195,6 +210,7 @@ public class IssueController {
                 issueAuthorField.getText().trim()
             );
 
+            logger.info("Successfully created new issue titled: '{}'", issueTitleField.getText().trim());
             WindowHelper.closeWindow(event);
         } else {
             StringBuilder problemString = new StringBuilder();
@@ -214,17 +230,21 @@ public class IssueController {
                 ),
                 (Stage) rootBox.getScene().getWindow()
             );
+            logger.error("Failed to create issue due to validation errors. Problems: {}", Arrays.toString(issueProblems));
         }
     }
 
     @FXML
     private void openAssigneeDialog() throws IOException {
+        logger.info("User requested to open the Assignee change dialog.");
+
         class assigneeNameViewSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
                 AssigneeController controller = fxmlLoader.getController();
                 controller.setIssue(issue);
                 controller.setOnChangeCallback(IssueController.this::updateAssigneeLabel);
+                logger.debug("Assignee dialog controller configured for issue ID: {}", issue.getId());
             }
         }
 
@@ -235,10 +255,12 @@ public class IssueController {
             rootBox.getScene().getWindow(),
             new assigneeNameViewSetup()
         );
+        logger.trace("Assignee window load initiated via WindowHelper.");
     }
 
     private void updateAssigneeLabel() {
         issueAssigneeLabel.setText("Assignee: " + issue.getAssignee());
+        logger.info("Assignee updated for issue ID {}. New assignee: {}", issue.getId(), issue.getAssignee());
     }
 
     @FXML
@@ -247,23 +269,30 @@ public class IssueController {
         final List<String> categoriesNamesList = Arrays.asList(board.getCategoriesNames());
 
         String categoryName = issueCategoryComboBox.getValue();
+        logger.info("Category change requested for issue ID {} to category: {}", issue.getId(), categoryName);
         int categoryId = categoriesNamesList.indexOf(categoryName);
+        logger.debug("Mapping category name '{}' to category ID: {}", categoryName, categoryId);
 
         try {
             board.moveIssue(issue.getId(), categoryId);
+            logger.info("Successfully moved issue ID {} to new category ID {}", issue.getId(), categoryId);
         } catch (IssueNotFoundException e) {
+            logger.error("IssueNotFoundException while trying to move issue ID {}", issue.getId(), e);
             throw new RuntimeException(e);
         }
     }
 
     @FXML
     private void openCommentDialog() throws IOException {
+        logger.info("User requested to open the Add Comment dialog.");
+
         class commentViewSetup implements WindowSetup {
             @Override
             public void setup(FXMLLoader fxmlLoader, Stage stage, Scene scene) {
                 CommentController controller = fxmlLoader.getController();
                 controller.setIssue(issue);
                 controller.setOnChangeCallback(IssueController.this::addComment);
+                logger.debug("Comment dialog controller configured for issue ID: {}", issue.getId());
             }
         }
 
@@ -278,10 +307,12 @@ public class IssueController {
 
     private void addComment() {
         commentList.setItems(issue.getComments());
+        logger.info("New comment added and comment list refreshed for issue ID {}.", issue.getId());
     }
 
     @FXML
     private void closeWindow(ActionEvent event) {
+        logger.info("Closing Issue window for issue ID {}.", issue.getId());
         WindowHelper.closeWindow(event);
     }
 }
