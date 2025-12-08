@@ -11,17 +11,23 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BoardCreationController {
     @FXML
     private TextField nameField;
+    private static final Logger logger = LoggerFactory.getLogger(BoardCreationController.class);
 
     @FXML
     protected void closeWindow(ActionEvent event) {
+        logger.debug("Closing Window");
         WindowHelper.closeWindow(event);
     }
 
     @FXML
     protected void createBoard(Event event) {
+        logger.debug("Creating Board");
         final Node source = (Node) event.getSource();
         final Stage stage = (Stage) source.getScene().getWindow();
 

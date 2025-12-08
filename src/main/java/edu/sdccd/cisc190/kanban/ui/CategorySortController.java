@@ -14,6 +14,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CategorySortController {
     private KanbanController kanbanController;
     private Board board;
@@ -27,8 +30,11 @@ public class CategorySortController {
     @FXML private Button moveUpButton;
     @FXML private Button moveDownButton;
 
+    private static final Logger logger = LoggerFactory.getLogger(CategorySortController.class);
+
     @FXML
     protected void initialize() {
+        logger.debug("Initializing CategorySortController");
         kanbanController = KanbanApplication.getController();
         board = KanbanApplication.getController().getBoard();
         categoryList = FXCollections.observableArrayList(board.getCategoriesNames());
@@ -81,6 +87,7 @@ public class CategorySortController {
     }
 
     private void moveCategory(int newIndex) {
+        logger.info("Moving Category " + (newIndex + 1));
         final String categoryName = categoryList.get(selectedCategoryId.get());
         categoryListView.getItems().remove(selectedCategoryId.get());
         categoryListView.getItems().add(newIndex, categoryName);
@@ -89,6 +96,7 @@ public class CategorySortController {
 
     @FXML
     private void onApplyAction(ActionEvent event) {
+        logger.info("Applying Category " + (selectedCategoryId.get() + 1));
         board.moveCategory(boardCategoryId, selectedCategoryId.get());
         kanbanController.moveCategoryBox(boardCategoryId, selectedCategoryId.get());
 
@@ -97,10 +105,12 @@ public class CategorySortController {
 
     @FXML
     private void closeWindow(ActionEvent event) {
+        logger.debug("Closing CategorySortController");
         WindowHelper.closeWindow(event);
     }
 
     public void setCategory(int categoryId) {
+        logger.info("Setting Category " + (categoryId));
         boardCategoryId = categoryId;
         selectedCategoryId.set(categoryId);
         categoryName = categoryList.get(selectedCategoryId.get());
