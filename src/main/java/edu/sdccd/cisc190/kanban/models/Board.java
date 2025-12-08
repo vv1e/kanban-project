@@ -241,29 +241,6 @@ public class Board {
                 .orElse(-1);
     }
 
-    // vv1e: I have no idea what this does, the code never calls this so hopefully it doesn't
-    //       have to be included
-
-//    private void repairIssueCoordinateMapping() {
-//        for (int i = 0; i < issueIdToCategoryId.length; i++) {
-//            int catId = issueIdToCategoryId[i];
-//
-//            // Invalid category index
-//            if (catId < 0 || catId >= categories.size()) {
-//                issueIdToCategoryId[i] = -1;
-//                issueIdToPlacementInCategory[i] = -1;
-//                continue;
-//            }
-//
-//            Category category = categories.get(catId);
-//            if (issueIdToPlacementInCategory[i] >= category.size()) {
-//                issueIdToCategoryId[i] = -1;
-//                issueIdToPlacementInCategory[i] = -1;
-//            }
-//        }
-//    }
-
-
     @JsonCreator
     public Board(
             @JsonProperty("name") String name,

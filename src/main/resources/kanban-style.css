@@ -1,8 +1,25 @@
+.kanban-boardname-container {
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5 0%, #dbdbdb 100%);
+}
+
 .kanban-boardname {
     -fx-font-size: xx-large;
     -fx-font-weight: bold;
     -fx-padding: 5;
-    -fx-background-color: linear-gradient(to bottom, #f5f5f5 0%, #dbdbdb 100%);
+}
+
+.kanban-filter-box {
+    -fx-padding: 5;
+    -fx-background-color: linear-gradient(to bottom, #959595 0%, #808080 100%);
+    -fx-text-fill: white;
+    -fx-base: #404040;
+    -fx-effect: dropshadow(one-pass-box, #00000030, 10, 0, 0, 1);
+}
+
+.kanban-filter-box-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 8
 }
 
 .kanban-openreminder {

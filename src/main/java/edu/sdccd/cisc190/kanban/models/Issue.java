@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.util.DateFormatHelper;
 import edu.sdccd.cisc190.kanban.util.interfaces.Sortable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +34,8 @@ public class Issue implements Sortable {
 
     private ArrayList<Path> attachmentPaths;
 
+    private final BooleanProperty filteredOutProperty;
+
     public Issue(
         String name,
         String description,
@@ -51,10 +55,12 @@ public class Issue implements Sortable {
         this.dateCreated = LocalDateTime.now();
         this.dateModified.set(this.dateCreated);
 
-        attachmentPaths = new ArrayList<>();
+        this.attachmentPaths = new ArrayList<>();
 
         this.comments = FXCollections.observableArrayList();
         this.addComment("System", "Issue created.");
+
+        this.filteredOutProperty = new SimpleBooleanProperty(false);
     }
 
     @JsonCreator
@@ -85,6 +91,8 @@ public class Issue implements Sortable {
 
         // store internally as ObservableList
         this.comments = FXCollections.observableArrayList(loadedComments);
+
+        this.filteredOutProperty = new SimpleBooleanProperty(false);
     }
 
     public int getId() {
@@ -166,5 +174,10 @@ public class Issue implements Sortable {
     @JsonIgnore
     public ObjectProperty<LocalDateTime> dateModifiedProperty() {
         return dateModified;
+    }
+
+    @JsonIgnore
+    public BooleanProperty filteredOutProperty() {
+        return filteredOutProperty;
     }
 }
