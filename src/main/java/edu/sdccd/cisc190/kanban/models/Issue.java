@@ -66,13 +66,14 @@ public class Issue implements Sortable {
             @JsonProperty("id") int id,
             @JsonProperty("dateCreated") LocalDateTime dateCreated,
             @JsonProperty("dateModified") LocalDateTime dateModified,
+            @JsonProperty("assignee") String assignee,
             @JsonProperty("comments") List<Comment> loadedComments
     ) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.creator = creator;
-        this.assignee = "None";
+        this.assignee = assignee;
         this.id = id;
 
         this.dateCreated = (dateCreated != null)

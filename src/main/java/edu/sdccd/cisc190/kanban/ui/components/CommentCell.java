@@ -1,6 +1,7 @@
 package edu.sdccd.cisc190.kanban.ui.components;
 
 import edu.sdccd.cisc190.kanban.models.Comment;
+import edu.sdccd.cisc190.kanban.util.DateFormatHelper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -37,7 +38,7 @@ public class CommentCell extends ListCell<Comment> {
             setGraphic(rootView);
 
             commentAuthorLabel.setText(comment.getAuthor());
-            commentDateLabel.setText(String.valueOf(comment.getCreationDate()));
+            commentDateLabel.setText(DateFormatHelper.formatDate(comment.getCreationDate()));
             commentTextLabel.setText(comment.getComment());
         }
     }
