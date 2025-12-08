@@ -211,6 +211,10 @@ public class KanbanController {
 
             filterField.setDisable(true);
             filterField.setText(null);
+
+            if (filteringTask != null && filteringTask.isRunning()) {
+                filteringTask.cancel();
+            }
         } else {
             try {
                 isBoardLoaded.setValue(true);
