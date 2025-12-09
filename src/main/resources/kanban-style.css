@@ -14,12 +14,7 @@
     -fx-text-fill: white;
     -fx-base: #404040;
     -fx-effect: dropshadow(one-pass-box, #00000030, 10, 0, 0, 1);
-}
-
-.kanban-filter-box-label {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 8
+    -fx-background-radius: 0 0 0 4;
 }
 
 .kanban-openreminder {
