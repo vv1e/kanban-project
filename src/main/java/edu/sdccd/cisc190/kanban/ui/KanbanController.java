@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import edu.sdccd.cisc190.kanban.KanbanApplication;
 import edu.sdccd.cisc190.kanban.enums.SortDirection;
 import edu.sdccd.cisc190.kanban.enums.SortField;
+import edu.sdccd.cisc190.kanban.filter.FilteringTask;
 import edu.sdccd.cisc190.kanban.models.Category;
 import edu.sdccd.cisc190.kanban.enums.SortingType;
 import edu.sdccd.cisc190.kanban.ui.components.CategoryBoxController;
@@ -26,6 +27,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -35,6 +37,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +47,14 @@ public class KanbanController {
     private final BooleanProperty isBoardLoaded = new SimpleBooleanProperty(false);
     private final ObjectProperty<SortingType> sortingType = new SimpleObjectProperty<>(SortingType.NONE);
 
+    private FilteringTask filteringTask;
+
     @FXML private MenuBar menuBar;
     @FXML private Label welcomeLabel;
     @FXML private HBox kanbanColumns;
     @FXML private Label welcomeSubtitleLabel;
+
+    @FXML private TextField filterField;
 
     @FXML private MenuItem menuFileNewCategory;
     @FXML private MenuItem menuFileNewIssue;
@@ -201,6 +208,13 @@ public class KanbanController {
             logger.info("Board set to null. Returning to default application state.");
             setBoardToDefault(stage);
             currentFile = null;
+
+            filterField.setDisable(true);
+            filterField.setText(null);
+
+            if (filteringTask != null && filteringTask.isRunning()) {
+                filteringTask.cancel();
+            }
         } else {
             try {
                 isBoardLoaded.setValue(true);
@@ -216,6 +230,9 @@ public class KanbanController {
                 for (Category category : categories) {
                     createCategoryBox(category);
                 }
+
+                filterField.setDisable(false);
+                filterField.textProperty().addListener(this::filterFieldListener);
 
                 // Redirect focus away from any buttons by default
                 welcomeLabel.requestFocus();
@@ -369,6 +386,16 @@ public class KanbanController {
             new FileChooser.ExtensionFilter("JSON Board Definition", "*.json")
         );
         return chooser;
+    }
+
+    private void filterFieldListener(ObservableValue<? extends String> ignoredObservable, String ignoredValue, String filterText) {
+        if (filteringTask != null && filteringTask.isRunning()) {
+            filteringTask.cancel();
+        }
+        filteringTask = new FilteringTask(board.getCategories(), filterText);
+
+        ExecutorService executorService = KanbanApplication.getExecutorService();
+        executorService.execute(filteringTask);
     }
 
     /**

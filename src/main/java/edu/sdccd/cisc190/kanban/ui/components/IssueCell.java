@@ -6,6 +6,7 @@ import edu.sdccd.cisc190.kanban.enums.IssueType;
 import edu.sdccd.cisc190.kanban.ui.KanbanController;
 import edu.sdccd.cisc190.kanban.models.Issue;
 import edu.sdccd.cisc190.kanban.util.exceptions.IssueNotFoundException;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +51,8 @@ public class IssueCell extends ListCell<Issue> {
         if (empty || issue == null) {
             setText(null);
             setGraphic(null);
+
+            rootView.opacityProperty().unbind();
         } else {
             final IssueType originalIssueType = originalIssue == null ? null : originalIssue.getType();
 
@@ -76,6 +79,13 @@ public class IssueCell extends ListCell<Issue> {
             } else {
                 descriptionLabel.setText(issue.getDescription().replaceAll("\n", " "));
             }
+
+            rootView.opacityProperty().bind(
+                Bindings.createDoubleBinding(
+                    () -> issue.filteredOutProperty().get()? 0.5: 1,
+                    issue.filteredOutProperty()
+                )
+            );
         }
     }
 

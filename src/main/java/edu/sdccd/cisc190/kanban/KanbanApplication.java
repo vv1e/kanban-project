@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,12 @@ import org.slf4j.LoggerFactory;
 public class KanbanApplication extends Application {
     private static KanbanController CONTROLLER;
     private static final Logger logger = LoggerFactory.getLogger(KanbanApplication.class);
+
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        return t;
+    });
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -27,6 +35,10 @@ public class KanbanApplication extends Application {
         CONTROLLER = fxmlLoader.getController();
 
         logger.info("Kanban application started successfully.");
+    }
+
+    public static ExecutorService getExecutorService() {
+        return executorService;
     }
 
     /**

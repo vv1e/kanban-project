@@ -13,15 +13,14 @@
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.ToggleGroup?>
 
+<?import javafx.scene.control.TextField?>
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="edu.sdccd.cisc190.kanban.ui.KanbanController"
     stylesheets="/rootstyle.css, /kanban-style.css"
 >
     <top>
-        <MenuBar
-            fx:id="menuBar"
-        >
+        <MenuBar fx:id="menuBar">
             <Menu text="_File">
                 <Menu text="_New...">
                     <MenuItem text="Kanban _Board" onAction="#menuNewBoard" accelerator="SHORTCUT+T"/>
@@ -61,7 +60,12 @@
 
     <center>
         <VBox HBox.hgrow="ALWAYS">
-            <Label fx:id="welcomeLabel" styleClass="kanban-boardname" HBox.hgrow="ALWAYS" maxWidth="Infinity">Welcome back!</Label>
+            <HBox styleClass="kanban-boardname-container">
+                <Label fx:id="welcomeLabel" styleClass="kanban-boardname" HBox.hgrow="ALWAYS" maxWidth="Infinity">Welcome back!</Label>
+                <VBox styleClass="kanban-filter-box" maxHeight="20" viewOrder="Infinity">
+                    <TextField disable="true" fx:id="filterField" promptText="Filter..."/>
+                </VBox>
+            </HBox>
             <Label fx:id="welcomeSubtitleLabel" styleClass="kanban-openreminder" HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="Infinity" alignment="TOP_LEFT" wrapText="true">Use the File menu to create a new Kanban board, or edit an existing one.</Label>
             <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="kanban-scroll">
                 <HBox fx:id="kanbanColumns" spacing="10" styleClass="kanban-container" VBox.vgrow="ALWAYS"/>
