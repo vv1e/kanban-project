@@ -47,4 +47,27 @@ public class KanbanApplication extends Application {
     public static KanbanController getController() {
         return CONTROLLER;
     }
+    private void onApplicationCloseRequest(WindowEvent event){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exitting");
+        alert.setHeaderText("going so soon");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            Alert gAlert = new Alert(Alert.AlertType.INFORMATION);
+            logger.info("Application closed by user.");
+            gAlert.setTitle("Goodbye");
+            gAlert.setHeaderText(null);
+            gAlert.setContentText("Bye bye!");
+            gAlert.showAndWait();
+
+        } else {
+            event.consume();
+        }
+
+    }
 }
