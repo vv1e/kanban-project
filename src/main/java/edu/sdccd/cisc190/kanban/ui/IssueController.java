@@ -382,7 +382,7 @@ public class IssueController {
 
     @FXML
     private void closeWindow(ActionEvent event) {
-        logger.info("Closing Issue window for issue ID {}.", issue.getId());
+        //logger.info("Closing Issue window for issue ID");
         WindowHelper.closeWindow(event);
     }
 }
